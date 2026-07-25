@@ -6,4 +6,7 @@ export default defineConfig({
   site: 'https://galoe2.github.io',
   base: '/exante',
   trailingSlash: 'ignore',
+  redirects: {
+    '/dashboard': '/mercati',
+  },
 });

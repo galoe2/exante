@@ -25,14 +25,15 @@ const latest = reports[0];
 const archive = reports.slice(1);
 ---
 
-<Base title="Dashboard — Ex Ante" active="dashboard">
+<Base title="Mercati — Ex Ante" active="mercati">
   <div class="container page">
     <div class="head">
       <div>
-        <h1>Dashboard</h1>
+        <h1>Mercati</h1>
         <p class="lead">
-          Il report completo dell'ETF Market Intelligence Dashboard: 109 ETF, 12 settori, 8
-          regioni, momentum, flussi e commento AI. Si aggiorna ogni sabato.
+          La dashboard settimanale di Ex Ante: 106 ETF, 13 settori, 8 regioni — momentum,
+          flussi, correlazioni e news. Si aggiorna ogni sabato, qui e nella rubrica MERCATI del
+          blog.
         </p>
       </div>
       {
@@ -129,9 +130,9 @@ const archive = reports.slice(1);
   iframe {
     display: block;
     width: 100%;
-    height: max(72vh, 720px);
+    height: max(76vh, 760px);
     border: none;
-    background: #fff;
+    background: var(--bg);
   }
   .empty {
     border: 1px solid var(--border-strong);
