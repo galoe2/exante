@@ -1,0 +1,120 @@
+{
+  "week": "2026-W30",
+  "updated": "2026-07-25",
+  "comment": "Settimana a -1,7% per SPY, breadth 4/13: guida Energy (+3,8%), in coda Consumers (-5,0%). Flussi in ingresso su Crypto, International.",
+  "overview": {
+    "spy_1w": -1.67,
+    "qqq_1w": -1.98,
+    "breadth": "4/13",
+    "realized_vol": 11.4,
+    "risk_score": 100
+  },
+  "gainers": [
+    {
+      "t": "USO",
+      "d": "Crude Oil",
+      "w1": 16.92
+    },
+    {
+      "t": "URA",
+      "d": "Uranium",
+      "w1": 5.16
+    },
+    {
+      "t": "GDX",
+      "d": "Gold Miners",
+      "w1": 5.07
+    },
+    {
+      "t": "COPX",
+      "d": "Copper Miners",
+      "w1": 4.94
+    },
+    {
+      "t": "XLE",
+      "d": "Oil & Gas",
+      "w1": 4.14
+    }
+  ],
+  "losers": [
+    {
+      "t": "XLY",
+      "d": "Discretionary",
+      "w1": -7.31
+    },
+    {
+      "t": "CLOU",
+      "d": "Cloud Software",
+      "w1": -7.06
+    },
+    {
+      "t": "XLC",
+      "d": "Communications",
+      "w1": -6.45
+    },
+    {
+      "t": "JETS",
+      "d": "Airlines",
+      "w1": -6.18
+    },
+    {
+      "t": "HACK",
+      "d": "Cybersecurity",
+      "w1": -5.69
+    }
+  ],
+  "overbought": [
+    {
+      "t": "USO",
+      "d": "Crude Oil",
+      "rsi": 71.6
+    },
+    {
+      "t": "XLE",
+      "d": "Oil & Gas",
+      "rsi": 68.7
+    },
+    {
+      "t": "XLU",
+      "d": "Utilities",
+      "rsi": 59.7
+    },
+    {
+      "t": "XLF",
+      "d": "Financial Sector",
+      "rsi": 59.6
+    },
+    {
+      "t": "XLV",
+      "d": "Healthcare",
+      "rsi": 58.0
+    }
+  ],
+  "oversold": [
+    {
+      "t": "REMX",
+      "d": "Rare Earth",
+      "rsi": 27.4
+    },
+    {
+      "t": "LQD",
+      "d": "Investment Grade",
+      "rsi": 30.2
+    },
+    {
+      "t": "XLY",
+      "d": "Discretionary",
+      "rsi": 30.6
+    },
+    {
+      "t": "TLT",
+      "d": "20Y+ Treasury",
+      "rsi": 31.9
+    },
+    {
+      "t": "XLC",
+      "d": "Communications",
+      "rsi": 33.3
+    }
+  ]
+}

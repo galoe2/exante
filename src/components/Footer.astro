@@ -1,0 +1,94 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const items = [
+  { label: 'HOME', href: `${base}/` },
+  { label: 'BLOG', href: `${base}/blog/` },
+  { label: 'DASHBOARD', href: `${base}/dashboard/` },
+  { label: 'CHI SONO', href: `${base}/chi-sono/` },
+  { label: 'LAB', href: `${base}/lab/` },
+  { label: 'CONTATTI', href: `${base}/contatti/` },
+];
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="container grid">
+    <div>
+      <div class="logo">EX ANTE</div>
+      <div class="tagline">
+        Prima che accada. Mercati, modelli, dati.<br />Il blog di Gennaro Aloe.
+      </div>
+    </div>
+    <div class="nav">
+      {items.map((item) => <a href={item.href}>{item.label}</a>)}
+    </div>
+    <div class="disclaimer">
+      I contenuti di questo sito hanno scopo informativo e riflettono opinioni personali
+      dell'autore: non costituiscono consulenza finanziaria né sollecitazione all'investimento.
+    </div>
+  </div>
+  <div class="subbar-wrap">
+    <div class="container subbar">
+      <span>© {year} GENNARO ALOE</span>
+      <span>EX-ANTE.IT</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-footer);
+  }
+  .grid {
+    padding-top: 48px;
+    padding-bottom: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 36px;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .tagline {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 280px;
+  }
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .nav a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    width: max-content;
+  }
+  .nav a:hover { color: var(--text); }
+  .disclaimer {
+    font-size: 12px;
+    color: var(--text-faint);
+    line-height: 1.75;
+    max-width: 320px;
+  }
+  .subbar-wrap { border-top: 1px solid var(--border); }
+  .subbar {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-faint);
+  }
+</style>

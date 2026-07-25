@@ -1,0 +1,212 @@
+---
+// Market Pulse settimanale in home: top movers e RSI estremi dalla dashboard ETF.
+// I dati arrivano da src/data/market.json, riscritto ogni settimana da
+// ETF_Dashboard/src/make_post.py.
+import data from '../data/market.json';
+import { fmtDate } from '../lib/utils';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const updated = fmtDate(new Date(data.updated));
+const ov = data.overview ?? {};
+
+function pct(v: number): string {
+  return `${v > 0 ? '+' : ''}${v.toFixed(1).replace('.', ',')}%`;
+}
+
+const stats = [
+  { label: 'SPY 1S', value: pct(ov.spy_1w ?? 0), tone: (ov.spy_1w ?? 0) > 0 ? 'pos' : 'neg' },
+  { label: 'QQQ 1S', value: pct(ov.qqq_1w ?? 0), tone: (ov.qqq_1w ?? 0) > 0 ? 'pos' : 'neg' },
+  ...(ov.breadth ? [{ label: 'BREADTH', value: ov.breadth, tone: '' }] : []),
+  ...(ov.realized_vol != null ? [{ label: 'VOL 21G', value: `${String(ov.realized_vol).replace('.', ',')}%`, tone: '' }] : []),
+  ...(ov.risk_score != null ? [{ label: 'RISK', value: `${ov.risk_score}/100`, tone: '' }] : []),
+];
+
+interface Row {
+  t: string;
+  d?: string;
+  value: string;
+  tone: string;
+}
+
+const quadrants: { title: string; tone: string; rows: Row[] }[] = [
+  {
+    title: 'TOP GAINERS — 1S',
+    tone: 'pos',
+    rows: (data.gainers ?? []).map((e: any) => ({ t: e.t, d: e.d, value: pct(e.w1), tone: 'pos' })),
+  },
+  {
+    title: 'TOP LOSERS — 1S',
+    tone: 'neg',
+    rows: (data.losers ?? []).map((e: any) => ({ t: e.t, d: e.d, value: pct(e.w1), tone: 'neg' })),
+  },
+  {
+    title: 'MOST OVERBOUGHT — RSI',
+    tone: 'pos',
+    rows: (data.overbought ?? []).map((e: any) => ({ t: e.t, d: e.d, value: `${Math.round(e.rsi)}`, tone: 'pos' })),
+  },
+  {
+    title: 'MOST OVERSOLD — RSI',
+    tone: 'neg',
+    rows: (data.oversold ?? []).map((e: any) => ({ t: e.t, d: e.d, value: `${Math.round(e.rsi)}`, tone: 'neg' })),
+  },
+].filter((q) => q.rows.length > 0);
+---
+
+<div class="section-header" style="margin-bottom:20px;">
+  <div class="mono-label">MARKET PULSE</div>
+  <span class="updated">AGGIORNATO {updated}</span>
+</div>
+
+<div class="panel">
+  <div class="stats">
+    {
+      stats.map((s) => (
+        <div class="stat">
+          <span class="stat-label">{s.label}</span>
+          <span class:list={['stat-value', s.tone]}>{s.value}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="quads">
+    {
+      quadrants.map((q) => (
+        <div class="quad">
+          <div class:list={['quad-hd', q.tone]}>{q.title}</div>
+          {q.rows.map((r) => (
+            <div class="row">
+              <span class="tk">{r.t}</span>
+              <span class="desc">{r.d}</span>
+              <span class:list={['val', r.tone]}>{r.value}</span>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    data.comment && (
+      <div class="comment-row">
+        <p class="comment">{data.comment}</p>
+        <a class="section-link" href={`${base}/dashboard/`}>DASHBOARD COMPLETA →</a>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .updated {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+  }
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 20px;
+    border-right: 1px solid var(--border);
+    flex: 1;
+    min-width: 130px;
+    white-space: nowrap;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+  }
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .quads {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .quad {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .quad:nth-child(2n) { border-right: none; }
+  .quad:nth-last-child(-n + 2) { border-bottom: none; }
+  .quad-hd {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    padding: 12px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+  .quad-hd.pos { color: var(--accent); }
+  .quad-hd.neg { color: var(--text-dim); }
+  .row {
+    display: grid;
+    grid-template-columns: 58px 1fr auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 6px 20px;
+  }
+  .row:hover { background: var(--bg-panel-hover); }
+  .tk {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .val {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-align: right;
+  }
+  .val.pos { color: var(--accent); }
+  .val.neg { color: var(--text-muted); }
+  .comment-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding: 16px 20px 18px;
+  }
+  .comment {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 680px;
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+  }
+  @media (max-width: 640px) {
+    .quads { grid-template-columns: 1fr; }
+    .quad { border-right: none; }
+    .quad:nth-last-child(-n + 2) { border-bottom: 1px solid var(--border); }
+    .quad:last-child { border-bottom: none; }
+  }
+</style>

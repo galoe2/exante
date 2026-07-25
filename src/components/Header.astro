@@ -1,0 +1,87 @@
+---
+interface Props {
+  active?: string;
+}
+const { active = '' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const items = [
+  { id: 'home', label: 'HOME', href: `${base}/` },
+  { id: 'blog', label: 'BLOG', href: `${base}/blog/` },
+  { id: 'dashboard', label: 'DASHBOARD', href: `${base}/dashboard/` },
+  { id: 'chi-sono', label: 'CHI SONO', href: `${base}/chi-sono/` },
+  { id: 'lab', label: 'LAB', href: `${base}/lab/` },
+  { id: 'contatti', label: 'CONTATTI', href: `${base}/contatti/` },
+];
+---
+
+<header>
+  <div class="container inner">
+    <a class="brand" href={`${base}/`}>
+      <span class="logo">EX&nbsp;ANTE</span>
+      <span class="author">Gennaro Aloe</span>
+    </a>
+    <nav>
+      {
+        items.map((item) => (
+          <a class:list={['nav-item', { active: active === item.id }]} href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(8, 11, 18, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .inner {
+    padding-top: 18px;
+    padding-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+  .author {
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  nav {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+  .nav-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 8px 11px;
+    color: var(--text-dim);
+    border-bottom: 2px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+</style>

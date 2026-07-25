@@ -1,0 +1,78 @@
+---
+// Variante "wide" (Home) o "compact" (articolo, contatti).
+// Il form è solo UI: collegare action a un provider (Buttondown/MailerLite/ConvertKit).
+interface Props {
+  variant?: 'wide' | 'compact';
+}
+const { variant = 'compact' } = Astro.props;
+---
+
+<div class:list={['box', variant]}>
+  <div class="content">
+    <div class="label">NEWSLETTER</div>
+    <div class="title">La lettura dei mercati, ogni settimana nella tua inbox.</div>
+    <div class="sub">Una email a settimana, zero rumore. Disiscrizione in un click.</div>
+  </div>
+  <form class="form" action="#" method="post">
+    <input type="email" name="email" placeholder="la-tua-email@esempio.it" required />
+    <button type="submit" class="btn-primary" style="padding:12px 20px;">ISCRIVITI</button>
+  </form>
+</div>
+
+<style>
+  .box {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+  }
+  .box.wide {
+    padding: 44px clamp(24px, 5vw, 48px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+  .box.compact {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .wide .content { max-width: 460px; }
+  .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+  .wide .label { margin-bottom: 12px; }
+  .title {
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  .compact .title { font-size: 18px; line-height: 1.45; }
+  .sub {
+    font-size: 13px;
+    color: var(--text-faint);
+    margin-top: 10px;
+  }
+  .compact .sub { margin-top: 0; }
+  .form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  input {
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 12px 14px;
+    outline: none;
+  }
+  .wide input { width: min(260px, 60vw); padding: 13px 14px; }
+  .compact input { flex: 1; min-width: 200px; }
+</style>

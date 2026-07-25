@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import Newsletter from '../components/Newsletter.astro';
+
+// Aggiornare con i link reali.
+const contacts = [
+  { label: 'LINKEDIN', value: 'linkedin.com/in/gennaro-aloe', href: 'https://linkedin.com/in/gennaro-aloe' },
+  { label: 'GITHUB', value: 'github.com/gennaroaloe', href: 'https://github.com/gennaroaloe' },
+  { label: 'EMAIL', value: 'gennaro@ex-ante.it', href: 'mailto:gennaro@ex-ante.it' },
+];
+---
+
+<Base title="Contatti — Ex Ante" active="contatti">
+  <div class="container-narrow page">
+    <h1>Contatti</h1>
+    <p class="lead">
+      Per proposte di collaborazione, domande sui modelli o due chiacchiere su mercati e moto
+      d'epoca.
+    </p>
+    <div class="list">
+      {
+        contacts.map((c) => (
+          <a class="row" href={c.href}>
+            <span class="label">{c.label}</span>
+            <span class="value">{c.value}</span>
+            <span class="arrow">→</span>
+          </a>
+        ))
+      }
+    </div>
+    <div style="margin-top:44px;">
+      <Newsletter variant="compact" />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 96px; }
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 600;
+    font-size: clamp(32px, 4.5vw, 44px);
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    margin: 0 0 44px;
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 520px;
+  }
+  .list { display: flex; flex-direction: column; }
+  .row {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: 18px;
+    align-items: baseline;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .row:hover { background: var(--bg-panel); color: var(--text); }
+  .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .value {
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+  .arrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+</style>

@@ -1,0 +1,151 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BlogListing from '../../components/BlogListing.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import { fmtDate, readingMinutes, RUBRICHE, rubricaSlug } from '../../lib/utils';
+
+// Un'unica route dinamica serve sia le pagine rubrica (/blog/mercati/)
+// sia gli articoli (/blog/<slug>/): così gli URL restano puliti.
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return [
+    ...RUBRICHE.map((r) => ({
+      params: { slug: rubricaSlug(r) },
+      props: { type: 'rubrica' as const, active: r, post: undefined },
+    })),
+    ...posts.map((post) => ({
+      params: { slug: post.id },
+      props: { type: 'post' as const, active: '', post },
+    })),
+  ];
+}
+
+interface Props {
+  type: 'rubrica' | 'post';
+  active: string;
+  post?: CollectionEntry<'blog'>;
+}
+
+const { type, active, post } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const Content = type === 'post' && post ? (await render(post)).Content : null;
+---
+
+{
+  type === 'rubrica' ? (
+    <Base title={`${active} — Blog — Ex Ante`} active="blog">
+      <BlogListing active={active} />
+    </Base>
+  ) : (
+    <Base title={`${post!.data.title} — Ex Ante`} description={post!.data.abstract} active="blog">
+      <div class="container-narrow page">
+        <a class="back" href={`${base}/blog/`}>
+          ← TUTTI GLI ARTICOLI
+        </a>
+        <div class="meta">
+          <span class="rubrica">{post!.data.rubrica}</span>
+          <span class="sep">/</span>
+          <span>{fmtDate(post!.data.date)}</span>
+          <span class="sep">/</span>
+          <span>{readingMinutes(post!)} MIN DI LETTURA</span>
+        </div>
+        <h1>{post!.data.title}</h1>
+        <p class="lead">{post!.data.abstract}</p>
+        <div class="divider" />
+
+        <div class="article-body">{Content && <Content />}</div>
+
+        {post!.data.report && (
+          <a class="report-link" href={`${base}${post!.data.report}`}>
+            REPORT COMPLETO →
+          </a>
+        )}
+
+        {post!.data.rubrica === 'MERCATI' && (
+          <div class="disclaimer">
+            <span class="nota">NOTA</span>
+            <span class="testo">
+              Questo contenuto ha scopo informativo e non costituisce consulenza finanziaria.
+            </span>
+          </div>
+        )}
+
+        <div style="margin-top:44px;">
+          <Newsletter variant="compact" />
+        </div>
+      </div>
+    </Base>
+  )
+}
+
+<style>
+  .page { padding-top: 64px; padding-bottom: 96px; }
+  .back {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+  .back:hover { color: var(--text); }
+  .meta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 36px 0 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+  .meta .rubrica { color: var(--accent); }
+  .meta .sep { color: var(--border-strong); }
+  h1 {
+    margin: 0;
+    font-weight: 600;
+    font-size: clamp(30px, 4.5vw, 42px);
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    text-wrap: pretty;
+  }
+  .lead {
+    margin: 22px 0 0;
+    font-size: 17.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .divider {
+    border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+  .report-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .disclaimer {
+    margin-top: 44px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-panel);
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .nota {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .testo {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+</style>

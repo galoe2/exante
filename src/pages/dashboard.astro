@@ -1,0 +1,181 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+
+// I report vengono copiati in public/reports/ dalla pipeline ETF (make_post.py).
+// La pagina incornicia sempre il più recente e lista l'archivio.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const reportsDir = path.resolve('./public/reports');
+
+let reports: { file: string; week: string }[] = [];
+if (fs.existsSync(reportsDir)) {
+  reports = fs
+    .readdirSync(reportsDir)
+    .filter((f) => /^ETF_Report_.+\.html$/.test(f))
+    .sort()
+    .reverse()
+    .map((file) => ({
+      file,
+      week: file.replace(/^ETF_Report_/, '').replace(/\.html$/, ''),
+    }));
+}
+
+const latest = reports[0];
+const archive = reports.slice(1);
+---
+
+<Base title="Dashboard — Ex Ante" active="dashboard">
+  <div class="container page">
+    <div class="head">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="lead">
+          Il report completo dell'ETF Market Intelligence Dashboard: 109 ETF, 12 settori, 8
+          regioni, momentum, flussi e commento AI. Si aggiorna ogni sabato.
+        </p>
+      </div>
+      {
+        latest && (
+          <div class="meta">
+            <span class="week">{latest.week}</span>
+            <a class="section-link" href={`${base}/reports/${latest.file}`} target="_blank">
+              APRI A SCHERMO INTERO →
+            </a>
+          </div>
+        )
+      }
+    </div>
+
+    {
+      latest ? (
+        <div class="frame-wrap">
+          <iframe
+            src={`${base}/reports/${latest.file}`}
+            title={`ETF Report ${latest.week}`}
+            loading="lazy"
+          />
+        </div>
+      ) : (
+        <div class="empty">
+          <span class="nota">IN ARRIVO</span>
+          <span>
+            Il primo report sarà pubblicato con il prossimo run settimanale della pipeline
+            (ogni sabato alle 09:00 CET).
+          </span>
+        </div>
+      )
+    }
+
+    {
+      archive.length > 0 && (
+        <div class="archive">
+          <div class="section-header" style="margin-bottom:8px;">
+            <div class="mono-label">ARCHIVIO REPORT</div>
+          </div>
+          {archive.map((r) => (
+            <a class="arc-row" href={`${base}/reports/${r.file}`} target="_blank">
+              <span class="arc-week">{r.week}</span>
+              <span class="arc-file">{r.file}</span>
+              <span class="arc-arrow">→</span>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 96px; }
+  .head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 600;
+    font-size: clamp(32px, 4.5vw, 44px);
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .week {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+  }
+  .frame-wrap {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+  }
+  iframe {
+    display: block;
+    width: 100%;
+    height: max(72vh, 720px);
+    border: none;
+    background: #fff;
+  }
+  .empty {
+    border: 1px solid var(--border-strong);
+    background: var(--bg-panel);
+    padding: 32px;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .nota {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .archive { margin-top: 56px; }
+  .arc-row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 18px;
+    align-items: baseline;
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .arc-row:hover { background: var(--bg-panel); color: var(--text); }
+  .arc-week {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .arc-file {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .arc-arrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+</style>

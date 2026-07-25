@@ -1,0 +1,157 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import Newsletter from '../components/Newsletter.astro';
+import MarketPulse from '../components/MarketPulse.astro';
+import { sortPosts } from '../lib/utils';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const posts = sortPosts(await getCollection('blog')).slice(0, 3);
+
+const homeLab = [
+  {
+    idx: '01',
+    nome: 'ETF Market Intelligence Dashboard',
+    desc: 'Dashboard settimanale su 106 ETF con narrative sui regimi di mercato generate via AI.',
+    stack: 'PYTHON · CLAUDE API',
+  },
+  {
+    idx: '02',
+    nome: 'Alpha Scout',
+    desc: 'Agente in stile terminale che orchestra 5 chiamate sequenziali a Claude per screening settoriale e idee ordinate per ranking.',
+    stack: 'REACT · CLAUDE API',
+  },
+  {
+    idx: '03',
+    nome: 'Kalman Adaptive Trading',
+    desc: 'Sistema di trading algoritmico con filtro di Kalman adattivo, backtesting e risk management.',
+    stack: 'PYTHON',
+  },
+];
+---
+
+<Base title="Ex Ante — Prima che accada. Mercati, modelli, dati." active="home">
+  <section class="container hero">
+    <div class="kicker">MERCATI · MODELLI · DATI</div>
+    <h1>Prima che accada.</h1>
+    <p class="lead">
+      Ex Ante è il blog di Gennaro Aloe — analytics leader nel credit risk, data scientist e
+      investitore privato. Una lettura settimanale dei mercati e dei modelli che li descrivono:
+      anticipare con metodo, non giudicare col senno di poi.
+    </p>
+    <div class="cta">
+      <a class="btn-primary" href={`${base}/blog/`}>LEGGI IL BLOG</a>
+      <a class="btn-secondary" href={`${base}/chi-sono/`}>CHI SONO</a>
+    </div>
+  </section>
+
+  <section class="container block">
+    <MarketPulse />
+  </section>
+
+  <section class="container block">
+    <div class="section-header" style="margin-bottom:28px;">
+      <div class="mono-label">ULTIMI ARTICOLI</div>
+      <a class="section-link" href={`${base}/blog/`}>TUTTI →</a>
+    </div>
+    <div class="cards">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="container block">
+    <div class="section-header" style="margin-bottom:8px;">
+      <div class="mono-label">DAL LAB</div>
+      <a class="section-link" href={`${base}/lab/`}>TUTTI I PROGETTI →</a>
+    </div>
+    {
+      homeLab.map((proj) => (
+        <a class="lab-row" href={`${base}/lab/`}>
+          <span class="idx">{proj.idx}</span>
+          <div class="lab-main">
+            <div class="lab-name">{proj.nome}</div>
+            <div class="lab-desc">{proj.desc}</div>
+          </div>
+          <span class="lab-stack">{proj.stack}</span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="container" style="padding-bottom:96px;">
+    <Newsletter variant="wide" />
+  </section>
+</Base>
+
+<style>
+  .hero { padding-top: 96px; padding-bottom: 80px; }
+  .kicker { margin-bottom: 22px; }
+  h1 {
+    margin: 0;
+    font-weight: 600;
+    font-size: clamp(42px, 6.5vw, 68px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: pretty;
+  }
+  .lead {
+    margin: 24px 0 0;
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 620px;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+  .cta {
+    display: flex;
+    gap: 12px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+  .block { padding-bottom: 80px; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 14px;
+  }
+  .lab-row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 18px;
+    align-items: baseline;
+    padding: 22px 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .lab-row:hover { background: var(--bg-panel); color: var(--text); }
+  .idx {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .lab-main { min-width: 240px; }
+  .lab-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .lab-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 560px;
+  }
+  .lab-stack {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    white-space: nowrap;
+    text-align: right;
+  }
+  @media (max-width: 560px) {
+    .lab-row { grid-template-columns: 44px 1fr; }
+    .lab-stack { display: none; }
+  }
+</style>

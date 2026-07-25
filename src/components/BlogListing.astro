@@ -1,0 +1,155 @@
+---
+import { getCollection } from 'astro:content';
+import { fmtDate, readingMinutes, sortPosts, RUBRICHE, RUBRICA_DESC, rubricaSlug } from '../lib/utils';
+
+interface Props {
+  // 'TUTTI' oppure una rubrica
+  active: string;
+}
+const { active } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const all = sortPosts(await getCollection('blog'));
+const posts = active === 'TUTTI' ? all : all.filter((p) => p.data.rubrica === active);
+
+const counts: Record<string, number> = { TUTTI: all.length };
+for (const p of all) counts[p.data.rubrica] = (counts[p.data.rubrica] ?? 0) + 1;
+
+const filters = ['TUTTI', ...RUBRICHE].map((id) => ({
+  id,
+  label: `${id} · ${counts[id] ?? 0}`,
+  href: id === 'TUTTI' ? `${base}/blog/` : `${base}/blog/${rubricaSlug(id)}/`,
+}));
+
+const desc = RUBRICA_DESC[active] ?? '';
+---
+
+<div class="container page">
+  <h1>Blog</h1>
+  <p class="lead">Tre rubriche, una disciplina: scrivere prima, verificare poi.</p>
+
+  <div class="filters">
+    {
+      filters.map((f) => (
+        <a class:list={['chip', { active: active === f.id }]} href={f.href}>
+          {f.label}
+        </a>
+      ))
+    }
+  </div>
+
+  {desc && <p class="rubrica-desc">{desc}</p>}
+
+  <div class="list">
+    {
+      posts.map((post) => (
+        <article>
+          <a class="row" href={`${base}/blog/${post.id}/`}>
+            <div class="meta">
+              <span class="rubrica">{post.data.rubrica}</span>
+              <span>{fmtDate(post.data.date)}</span>
+              <span>{readingMinutes(post)} MIN</span>
+            </div>
+            <div class="body">
+              <h2>{post.data.title}</h2>
+              <p>{post.data.abstract}</p>
+            </div>
+          </a>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 96px; }
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 600;
+    font-size: clamp(32px, 4.5vw, 44px);
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    margin: 0 0 40px;
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 8px 13px;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+  }
+  .chip:hover { border-color: var(--text-faint); color: var(--text-dim); }
+  .chip.active {
+    color: #080b12;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .chip.active:hover { color: #080b12; }
+  .rubrica-desc {
+    margin: 18px 0 0;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    max-width: 620px;
+    line-height: 1.65;
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+  }
+  .list { margin-top: 24px; }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(150px, 190px) 1fr;
+    gap: 24px;
+    padding: 26px 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .row:hover { background: var(--bg-panel); color: var(--text); }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-family: var(--mono);
+  }
+  .meta .rubrica {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+  .meta span:not(.rubrica) {
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .body { min-width: 220px; }
+  .body h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  .body p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 640px;
+  }
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 1fr; gap: 10px; }
+    .meta { flex-direction: row; align-items: baseline; gap: 14px; }
+  }
+</style>

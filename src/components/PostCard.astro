@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { fmtDate, readingMinutes } from '../lib/utils';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const href = `${base}/blog/${post.id}/`;
+---
+
+<article>
+  <a class="card" href={href}>
+    <div class="row">
+      <span class="rubrica">{post.data.rubrica}</span>
+      <span class="data">{fmtDate(post.data.date)}</span>
+    </div>
+    <h3>{post.data.title}</h3>
+    <p>{post.data.abstract}</p>
+    <div class="foot">
+      <span class="lettura">{readingMinutes(post)} MIN DI LETTURA</span>
+      {
+        post.data.sparkline ? (
+          <svg width="64" height="18" viewBox="0 0 64 18" style="display:block;">
+            <polyline points={post.data.sparkline} fill="none" stroke="var(--accent)" stroke-width="1.5" />
+          </svg>
+        ) : post.data.stat ? (
+          <span class="stat">{post.data.stat}</span>
+        ) : null
+      }
+    </div>
+  </a>
+</article>
+
+<style>
+  article { display: flex; }
+  .card {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: var(--text);
+    flex: 1;
+  }
+  .card:hover { border-color: var(--border-strong); color: var(--text); }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .rubrica {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+  .data {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .lettura, .stat {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-faint);
+  }
+  .stat { color: var(--text-dim); }
+</style>

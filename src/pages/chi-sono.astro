@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+
+const skills = ['CREDIT SCORING', 'MACHINE LEARNING', 'PRICING OPTIMIZATION', 'EXPLAINABLE AI', 'GEN-AI'];
+
+const timeline = [
+  { periodo: 'OGGI', ruolo: 'Analytics leader, credit risk', nota: 'Guido un team di analytics in una multinazionale del settore.' },
+  { periodo: 'DOCENZA', ruolo: 'Tutor, Master in Data Science & AI', nota: 'Seguo gli studenti su machine learning e credit scoring.' },
+  { periodo: 'RICERCA', ruolo: 'Pubblicazioni scientifiche', nota: 'Spiegazioni controfattuali e Gen-AI applicate al credit risk.' },
+  { periodo: 'PERCORSO', ruolo: 'Modelli di scoring e pricing', nota: 'Regressione logistica, ML, pricing optimization, explainable AI.' },
+];
+
+const refs = [
+  'MASTER IN DATA SCIENCE & AI — TUTOR',
+  'PAPER: COUNTERFACTUAL EXPLANATIONS IN CREDIT RISK',
+  'PAPER: GEN-AI APPLICATIONS IN CREDIT RISK',
+];
+---
+
+<Base title="Chi sono — Ex Ante" active="chi-sono">
+  <div class="container page">
+    <div class="grid">
+      <div class="left">
+        <h1>Chi sono</h1>
+        <div class="kicker" style="letter-spacing:0.12em; margin-bottom:28px;">
+          GENNARO ALOE — ANALYTICS LEADER, CREDIT RISK
+        </div>
+        <div class="bio">
+          <p>
+            Guido un team di analytics in una multinazionale del credit risk. Mi occupo di modelli
+            di scoring — dalla regressione logistica al machine learning — di pricing optimization
+            e di explainable AI: rendere trasparenti le decisioni dei modelli è metà del mio lavoro.
+          </p>
+          <p>
+            Sono tutor per un Master in Data Science e AI e ho pubblicato lavori scientifici su
+            spiegazioni controfattuali e sull'uso della Gen-AI nel credit risk. Credo nella
+            divulgazione tecnica fatta bene: rigorosa nei numeri, chiara nelle parole.
+          </p>
+          <p>
+            Fuori dall'ufficio sono un investitore privato con un debole per la finanza
+            quantitativa — e per la meccanica delle moto d'epoca: due modi diversi di smontare
+            sistemi complessi per capire come funzionano.
+          </p>
+        </div>
+        <div class="skills">
+          {skills.map((s) => <span class="skill">{s}</span>)}
+        </div>
+      </div>
+      <div>
+        <div class="mono-label percorso-label">PERCORSO</div>
+        {
+          timeline.map((t) => (
+            <div class="t-row">
+              <span class="t-periodo">{t.periodo}</span>
+              <div>
+                <div class="t-ruolo">{t.ruolo}</div>
+                <div class="t-nota">{t.nota}</div>
+              </div>
+            </div>
+          ))
+        }
+        <div class="mono-label refs-label">FORMAZIONE E DOCENZA</div>
+        <div class="refs">
+          {refs.map((r) => <div class="ref">{r}</div>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 96px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 56px;
+  }
+  .left { max-width: 620px; }
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 600;
+    font-size: clamp(32px, 4.5vw, 44px);
+    letter-spacing: -0.01em;
+  }
+  .bio {
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: var(--text-body);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .bio p { margin: 0; }
+  .skills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  .skill {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+  }
+  .percorso-label {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-bottom: 8px;
+  }
+  .t-row {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .t-periodo {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .t-ruolo {
+    font-size: 14.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .t-nota {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .refs-label { margin: 36px 0 14px; }
+  .refs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ref {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    line-height: 1.6;
+  }
+</style>

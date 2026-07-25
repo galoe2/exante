@@ -1,0 +1,183 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Screenshot: mettere le immagini in public/lab/ e aggiornare `img`.
+// Link GitHub/demo: aggiornare `github` e `demo` con gli URL reali.
+const projects = [
+  {
+    nome: 'ETF Market Intelligence Dashboard',
+    anno: '2026',
+    desc: 'Dashboard settimanale che traccia 106 ETF: segnali di regime, forza relativa e narrative di mercato generate via AI a ogni aggiornamento.',
+    stack: 'PYTHON · CLAUDE API · PLOTLY',
+    img: '',
+    github: '#',
+    demo: '#',
+  },
+  {
+    nome: 'Alpha Scout',
+    anno: '2026',
+    desc: "Agente ispirato ai terminali finanziari: 5 chiamate sequenziali all'API di Claude per screening settoriale e idee d'investimento ordinate per ranking.",
+    stack: 'REACT · CLAUDE API',
+    img: '',
+    github: '#',
+    demo: '#',
+  },
+  {
+    nome: 'Kalman Adaptive Trading',
+    anno: '2025',
+    desc: 'Sistema di trading algoritmico basato su filtro di Kalman adattivo, con backtesting rigoroso e regole di risk management esplicite.',
+    stack: 'PYTHON · PANDAS',
+    img: '',
+    github: '#',
+    demo: '',
+  },
+  {
+    nome: 'Stock Tracker PWA',
+    anno: '2025',
+    desc: 'App mobile di stock tracking multi-portafoglio: quotazioni in tempo reale via Finnhub, installabile come PWA.',
+    stack: 'REACT · FINNHUB · PWA',
+    img: '',
+    github: '#',
+    demo: '#',
+  },
+];
+---
+
+<Base title="Lab — Ex Ante" active="lab">
+  <div class="container page">
+    <h1>Lab</h1>
+    <p class="lead">
+      I progetti che costruisco per mettere alla prova idee, modelli e strumenti. Codice vero,
+      dati veri, limiti dichiarati.
+    </p>
+    <div class="grid">
+      {
+        projects.map((proj) => (
+          <article>
+            <div class="media">
+              {proj.img ? (
+                <img src={proj.img} alt={`Screenshot — ${proj.nome}`} loading="lazy" />
+              ) : (
+                <div class="placeholder">SCREENSHOT — {proj.nome.toUpperCase()}</div>
+              )}
+            </div>
+            <div class="body">
+              <div class="head">
+                <h2>{proj.nome}</h2>
+                <span class="anno">{proj.anno}</span>
+              </div>
+              <p class="desc">{proj.desc}</p>
+              <div class="stack">{proj.stack}</div>
+              <div class="links">
+                <a href={proj.github}>GITHUB →</a>
+                {proj.demo && <a href={proj.demo}>DEMO →</a>}
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 96px; }
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 600;
+    font-size: clamp(32px, 4.5vw, 44px);
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    margin: 0 0 44px;
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  article {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+  }
+  .media {
+    aspect-ratio: 16/9;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(230, 233, 240, 0.04);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 12px;
+    text-align: center;
+  }
+  .body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .anno {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+  .desc {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .stack {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+  .links {
+    display: flex;
+    gap: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+  .links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+</style>
