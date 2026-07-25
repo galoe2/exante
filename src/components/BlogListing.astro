@@ -40,6 +40,15 @@ const desc = RUBRICA_DESC[active] ?? '';
 
   {desc && <p class="rubrica-desc">{desc}</p>}
 
+  {
+    posts.length === 0 && (
+      <div class="empty">
+        <span class="nota">IN ARRIVO</span>
+        <span>Non ci sono ancora articoli in questa rubrica.</span>
+      </div>
+    )
+  }
+
   <div class="list">
     {
       posts.map((post) => (
@@ -107,6 +116,26 @@ const desc = RUBRICA_DESC[active] ?? '';
     line-height: 1.65;
     border-left: 2px solid var(--accent);
     padding-left: 14px;
+  }
+  .empty {
+    margin-top: 24px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-panel);
+    padding: 32px;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 620px;
+  }
+  .nota {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    white-space: nowrap;
   }
   .list { margin-top: 24px; }
   .row {
