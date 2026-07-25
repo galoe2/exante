@@ -4,10 +4,21 @@ import Base from '../layouts/Base.astro';
 import PostCard from '../components/PostCard.astro';
 import Newsletter from '../components/Newsletter.astro';
 import MarketPulse from '../components/MarketPulse.astro';
-import { sortPosts } from '../lib/utils';
+import { sortPosts, fmtDate } from '../lib/utils';
+import market from '../data/market.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = sortPosts(await getCollection('blog')).slice(0, 3);
+
+// Righe del pannello "pipeline log" nell'hero, dai dati reali dell'ultimo run
+const pipe = (market as any).pipeline ?? {};
+const logLines = [
+  `pipeline ${pipe.week ?? market.week} · ${fmtDate(new Date(market.updated))}`,
+  ...(pipe.etfs
+    ? [`${pipe.etfs} ETF analizzati · ${pipe.sectors} settori · ${pipe.regions} regioni`]
+    : []),
+  ...(pipe.regime ? [`regime: ${pipe.regime} · risk ${pipe.risk_score}/100`] : []),
+];
 
 const homeLab = [
   {
@@ -33,16 +44,40 @@ const homeLab = [
 
 <Base title="Ex Ante — Prima che accada. Mercati, modelli, dati." active="home">
   <section class="container hero">
-    <div class="kicker">MERCATI · MODELLI · DATI</div>
-    <h1>Prima che accada.</h1>
-    <p class="lead">
-      Ex Ante è il blog di Gennaro Aloe — analytics leader nel credit risk, data scientist e
-      investitore privato. Una lettura settimanale dei mercati e dei modelli che li descrivono:
-      anticipare con metodo, non giudicare col senno di poi.
-    </p>
-    <div class="cta">
-      <a class="btn-primary" href={`${base}/blog/`}>LEGGI IL BLOG</a>
-      <a class="btn-secondary" href={`${base}/chi-sono/`}>CHI SONO</a>
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">MERCATI · MODELLI · DATI</div>
+        <h1>Prima che accada.</h1>
+        <p class="lead">
+          Ex Ante è il blog di Gennaro Aloe — analytics leader nel credit risk, data scientist e
+          investitore privato. Una lettura settimanale dei mercati e dei modelli che li descrivono:
+          anticipare con metodo, non giudicare col senno di poi.
+        </p>
+        <div class="cta">
+          <a class="btn-primary" href={`${base}/blog/`}>LEGGI IL BLOG</a>
+          <a class="btn-secondary" href={`${base}/chi-sono/`}>CHI SONO</a>
+        </div>
+      </div>
+      <aside class="terminal" aria-label="Ultimo run della pipeline">
+        <div class="term-head">
+          <span class="term-dot">●</span>
+          <span>EX-ANTE / PIPELINE</span>
+        </div>
+        {
+          logLines.map((line, i) => (
+            <div class="term-line" style={`animation-delay:${300 + i * 450}ms`}>
+              <span class="prompt">&gt;</span> {line}
+            </div>
+          ))
+        }
+        <a
+          class="term-line term-link"
+          href={`${base}/dashboard/`}
+          style={`animation-delay:${300 + logLines.length * 450}ms`}
+        >
+          <span class="prompt">&gt;</span> report pubblicato → /dashboard<span class="cursor">▊</span>
+        </a>
+      </aside>
     </div>
   </section>
 
@@ -79,6 +114,38 @@ const homeLab = [
     }
   </section>
 
+  <section class="container block">
+    <div class="section-header" style="margin-bottom:28px;">
+      <div class="mono-label">COME FUNZIONA</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-idx">01 — DATI</div>
+        <div class="step-title">100+ ETF, ogni settimana</div>
+        <div class="step-desc">
+          Prezzi, momentum, flussi e news di settori e regioni, raccolti e normalizzati da una
+          pipeline automatica.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-idx">02 — MODELLI</div>
+        <div class="step-title">Segnali e regime</div>
+        <div class="step-desc">
+          Forza relativa, RSI, drawdown e proxy dei flussi diventano un quadro: risk-on, risk-off
+          o rotazione.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-idx">03 — EX ANTE</div>
+        <div class="step-title">Report e lettura, ogni sabato</div>
+        <div class="step-desc">
+          La dashboard completa e l'articolo della settimana si pubblicano da soli. La tesi si
+          scrive prima, si verifica poi.
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="container" style="padding-bottom:96px;">
     <Newsletter variant="wide" />
   </section>
@@ -86,6 +153,80 @@ const homeLab = [
 
 <style>
   .hero { padding-top: 96px; padding-bottom: 80px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+  }
+  .terminal {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+    padding: 18px 20px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--text-muted);
+  }
+  .term-head {
+    display: flex;
+    gap: 8px;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  .term-dot { color: var(--accent); }
+  .term-line {
+    display: block;
+    opacity: 0;
+    animation: term-in 0.01s forwards;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .prompt { color: var(--accent); }
+  .term-link { color: var(--text); }
+  .term-link:hover { color: var(--accent); }
+  .cursor {
+    color: var(--accent);
+    animation: blink 1.1s steps(1) infinite;
+    margin-left: 4px;
+  }
+  @keyframes term-in { to { opacity: 1; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .step {
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+    padding: 24px;
+  }
+  .step-idx {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .step-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
   .kicker { margin-bottom: 22px; }
   h1 {
     margin: 0;

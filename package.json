@@ -10,6 +10,7 @@
     "new-post": "node scripts/new-post.mjs"
   },
   "dependencies": {
-    "astro": "^5.12.0"
+    "astro": "^5.12.0",
+    "astro-og-canvas": "^0.13.0"
   }
 }

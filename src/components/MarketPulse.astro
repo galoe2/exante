@@ -14,11 +14,11 @@ function pct(v: number): string {
 }
 
 const stats = [
-  { label: 'SPY 1S', value: pct(ov.spy_1w ?? 0), tone: (ov.spy_1w ?? 0) > 0 ? 'pos' : 'neg' },
-  { label: 'QQQ 1S', value: pct(ov.qqq_1w ?? 0), tone: (ov.qqq_1w ?? 0) > 0 ? 'pos' : 'neg' },
-  ...(ov.breadth ? [{ label: 'BREADTH', value: ov.breadth, tone: '' }] : []),
-  ...(ov.realized_vol != null ? [{ label: 'VOL 21G', value: `${String(ov.realized_vol).replace('.', ',')}%`, tone: '' }] : []),
-  ...(ov.risk_score != null ? [{ label: 'RISK', value: `${ov.risk_score}/100`, tone: '' }] : []),
+  { label: 'SPY 1S', value: pct(ov.spy_1w ?? 0), tone: (ov.spy_1w ?? 0) > 0 ? 'pos' : 'neg', num: ov.spy_1w ?? 0, fmt: 'pct' },
+  { label: 'QQQ 1S', value: pct(ov.qqq_1w ?? 0), tone: (ov.qqq_1w ?? 0) > 0 ? 'pos' : 'neg', num: ov.qqq_1w ?? 0, fmt: 'pct' },
+  ...(ov.breadth ? [{ label: 'BREADTH', value: ov.breadth, tone: '', num: null, fmt: '' }] : []),
+  ...(ov.realized_vol != null ? [{ label: 'VOL 21G', value: `${String(ov.realized_vol).replace('.', ',')}%`, tone: '', num: ov.realized_vol, fmt: 'vol' }] : []),
+  ...(ov.risk_score != null ? [{ label: 'RISK', value: `${ov.risk_score}/100`, tone: '', num: null, fmt: '' }] : []),
 ];
 
 interface Row {
@@ -63,7 +63,13 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
       stats.map((s) => (
         <div class="stat">
           <span class="stat-label">{s.label}</span>
-          <span class:list={['stat-value', s.tone]}>{s.value}</span>
+          <span
+            class:list={['stat-value', s.tone]}
+            data-countup={s.num != null ? s.num : undefined}
+            data-fmt={s.num != null ? s.fmt : undefined}
+          >
+            {s.value}
+          </span>
         </div>
       ))
     }
@@ -210,3 +216,43 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
     .quad:last-child { border-bottom: none; }
   }
 </style>
+
+<script>
+  // Count-up dei valori percentuali quando la striscia entra nel viewport.
+  // astro:page-load copre sia il primo caricamento sia le view transitions.
+  function fmtVal(v: number, fmt: string): string {
+    const s = Math.abs(v).toFixed(1).replace('.', ',');
+    if (fmt === 'pct') return `${v > 0 ? '+' : v < 0 ? '-' : ''}${s}%`;
+    return `${s}%`;
+  }
+
+  function animate(el: HTMLElement) {
+    const target = parseFloat(el.dataset.countup ?? '0');
+    const fmt = el.dataset.fmt ?? 'pct';
+    const t0 = performance.now();
+    const dur = 900;
+    function tick(t: number) {
+      const p = Math.min((t - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmtVal(target * eased, fmt);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function init() {
+    const els = document.querySelectorAll<HTMLElement>('[data-countup]');
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          animate(e.target as HTMLElement);
+          io.unobserve(e.target);
+        }
+      }
+    });
+    els.forEach((el) => io.observe(el));
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

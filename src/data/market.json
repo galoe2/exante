@@ -116,5 +116,15 @@
       "d": "Communications",
       "rsi": 33.3
     }
-  ]
+  ],
+  "pipeline": {
+    "week": "2026-W30",
+    "etfs": 106,
+    "sectors": 13,
+    "regions": 8,
+    "regime": "RISK-OFF",
+    "risk_score": 100,
+    "report": "/reports/ETF_Report_2026-W30.html"
+  },
+  "spy_spark": "2.0,2.2 9.5,12.4 17.0,10.1 24.5,6.4 32.0,16.0 39.5,7.5 47.0,2.0 54.5,8.3 62.0,11.0"
 }

@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 // Screenshot: mettere le immagini in public/lab/ e aggiornare `img`.
 // Link GitHub/demo: aggiornare `github` e `demo` con gli URL reali.
 const projects = [
@@ -9,7 +11,7 @@ const projects = [
     anno: '2026',
     desc: 'Dashboard settimanale che traccia 106 ETF: segnali di regime, forza relativa e narrative di mercato generate via AI a ogni aggiornamento.',
     stack: 'PYTHON · CLAUDE API · PLOTLY',
-    img: '',
+    img: '/lab/etf-dashboard.png',
     github: '#',
     demo: '#',
   },
@@ -18,7 +20,7 @@ const projects = [
     anno: '2026',
     desc: "Agente ispirato ai terminali finanziari: 5 chiamate sequenziali all'API di Claude per screening settoriale e idee d'investimento ordinate per ranking.",
     stack: 'REACT · CLAUDE API',
-    img: '',
+    img: '/lab/alpha-scout.svg',
     github: '#',
     demo: '#',
   },
@@ -27,7 +29,7 @@ const projects = [
     anno: '2025',
     desc: 'Sistema di trading algoritmico basato su filtro di Kalman adattivo, con backtesting rigoroso e regole di risk management esplicite.',
     stack: 'PYTHON · PANDAS',
-    img: '',
+    img: '/lab/kalman.svg',
     github: '#',
     demo: '',
   },
@@ -36,7 +38,7 @@ const projects = [
     anno: '2025',
     desc: 'App mobile di stock tracking multi-portafoglio: quotazioni in tempo reale via Finnhub, installabile come PWA.',
     stack: 'REACT · FINNHUB · PWA',
-    img: '',
+    img: '/lab/stock-tracker.svg',
     github: '#',
     demo: '#',
   },
@@ -56,7 +58,7 @@ const projects = [
           <article>
             <div class="media">
               {proj.img ? (
-                <img src={proj.img} alt={`Screenshot — ${proj.nome}`} loading="lazy" />
+                <img src={`${base}${proj.img}`} alt={`Screenshot — ${proj.nome}`} loading="lazy" />
               ) : (
                 <div class="placeholder">SCREENSHOT — {proj.nome.toUpperCase()}</div>
               )}

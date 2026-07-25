@@ -4,6 +4,7 @@ rubrica: MERCATI
 date: 2026-07-25
 abstract: "SPY -1,7% sulla settimana. Capitale in ingresso su Crypto: la lettura settimanale dei dati su oltre 100 ETF."
 stat: "SPY -1,7%"
+sparkline: "2.0,2.2 9.5,12.4 17.0,10.1 24.5,6.4 32.0,16.0 39.5,7.5 47.0,2.0 54.5,8.3 62.0,11.0"
 report: "/reports/ETF_Report_2026-W30.html"
 ---
 

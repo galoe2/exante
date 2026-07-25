@@ -39,7 +39,12 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
       <BlogListing active={active} />
     </Base>
   ) : (
-    <Base title={`${post!.data.title} — Ex Ante`} description={post!.data.abstract} active="blog">
+    <Base
+      title={`${post!.data.title} — Ex Ante`}
+      description={post!.data.abstract}
+      active="blog"
+      ogImage={`og/${post!.id}.png`}
+    >
       <div class="container-narrow page">
         <a class="back" href={`${base}/blog/`}>
           ← TUTTI GLI ARTICOLI
