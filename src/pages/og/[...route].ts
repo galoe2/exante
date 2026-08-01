@@ -28,28 +28,28 @@ export const { getStaticPaths, GET } = await OGImageRoute({
   getImageOptions: (_path, page) => ({
     title: page.title,
     description: page.description,
-    bgGradient: [[8, 11, 18]],
-    border: { color: [255, 122, 41], width: 14, side: 'inline-start' },
+    bgGradient: [[255, 255, 255]],
+    border: { color: [62, 92, 143], width: 14, side: 'inline-start' },
     padding: 72,
     logo: undefined,
     font: {
       title: {
-        families: ['IBM Plex Sans'],
-        weight: 'SemiBold',
+        families: ['Inter'],
+        weight: 'Bold',
         size: 60,
-        color: [230, 233, 240],
+        color: [15, 23, 42],
         lineHeight: 1.2,
       },
       description: {
-        families: ['IBM Plex Mono'],
+        families: ['Inter'],
         size: 26,
-        color: [151, 161, 180],
+        color: [100, 116, 139],
         lineHeight: 1.5,
       },
     },
     fonts: [
-      'https://api.fontsource.org/v1/fonts/ibm-plex-sans/latin-600-normal.ttf',
-      'https://api.fontsource.org/v1/fonts/ibm-plex-mono/latin-400-normal.ttf',
+      'https://api.fontsource.org/v1/fonts/inter/latin-700-normal.ttf',
+      'https://api.fontsource.org/v1/fonts/inter/latin-400-normal.ttf',
     ],
   }),
 });

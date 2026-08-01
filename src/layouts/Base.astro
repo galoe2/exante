@@ -1,6 +1,5 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import TickerBar from '../components/TickerBar.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -15,7 +14,7 @@ interface Props {
 
 const {
   title,
-  description = 'Ex Ante — Prima che accada. Mercati, modelli, dati. Il blog di Gennaro Aloe.',
+  description = 'Ex Ante — Prima che accada. Analisi settimanale dei mercati: rotazioni settoriali, ETF e azioni, letti attraverso i dati.',
   active = '',
   ogImage = 'og/site.png',
 } = Astro.props;
@@ -40,14 +39,13 @@ const ogUrl = Astro.site ? new URL(`${base}/${ogImage}`, Astro.site).href : `${b
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <ClientRouter />
   </head>
   <body>
     <div style="min-height:100vh; display:flex; flex-direction:column;">
-      <TickerBar />
       <Header active={active} />
       <main style="flex:1;">
         <slot />

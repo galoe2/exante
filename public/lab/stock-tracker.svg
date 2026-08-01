@@ -1,28 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="ui-monospace, 'IBM Plex Mono', monospace">
-  <rect width="640" height="360" fill="#0C101A"/>
-  <!-- phone frame -->
-  <rect x="240" y="28" width="160" height="332" rx="0" fill="#080B12" stroke="#2C3850"/>
-  <rect x="252" y="48" width="136" height="26" fill="#0C101A"/>
-  <text x="260" y="65" fill="#E6E9F0" font-size="11" font-weight="600">PORTAFOGLIO</text>
-  <text x="380" y="65" fill="#FF7A29" font-size="10" text-anchor="end">LIVE</text>
-  <g font-size="10">
-    <text x="260" y="100" fill="#E6E9F0">AAPL</text><text x="380" y="100" fill="#FF7A29" text-anchor="end">+1,2%</text>
-    <polyline points="260,116 280,112 300,114 320,108 340,110 360,104 380,106" fill="none" stroke="#FF7A29" stroke-width="1.5"/>
-    <line x1="252" y1="128" x2="388" y2="128" stroke="#182031"/>
-    <text x="260" y="150" fill="#E6E9F0">MSFT</text><text x="380" y="150" fill="#FF7A29" text-anchor="end">+0,8%</text>
-    <polyline points="260,166 280,164 300,160 320,162 340,156 360,158 380,152" fill="none" stroke="#FF7A29" stroke-width="1.5"/>
-    <line x1="252" y1="178" x2="388" y2="178" stroke="#182031"/>
-    <text x="260" y="200" fill="#E6E9F0">ENI</text><text x="380" y="200" fill="#97A1B4" text-anchor="end">-0,4%</text>
-    <polyline points="260,210 280,214 300,212 320,218 340,216 360,220 380,222" fill="none" stroke="#55617A" stroke-width="1.5"/>
-    <line x1="252" y1="232" x2="388" y2="232" stroke="#182031"/>
-    <text x="260" y="254" fill="#E6E9F0">VWCE</text><text x="380" y="254" fill="#FF7A29" text-anchor="end">+0,3%</text>
-    <polyline points="260,268 280,266 300,270 320,264 340,266 360,262 380,260" fill="none" stroke="#FF7A29" stroke-width="1.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="Inter, 'Helvetica Neue', sans-serif">
+  <rect width="640" height="360" fill="#FFFFFF"/>
+  <rect x="240" y="28" width="160" height="332" rx="18" fill="#F5F7FA" stroke="#E2E8F0"/>
+  <text x="260" y="66" fill="#0F172A" font-size="12" font-weight="700">Portafoglio</text>
+  <rect x="344" y="52" width="40" height="18" rx="9" fill="#E6F5EF"/>
+  <text x="364" y="65" fill="#0A9B62" font-size="9.5" font-weight="700" text-anchor="middle">LIVE</text>
+  <g font-size="11">
+    <rect x="252" y="82" width="136" height="52" rx="10" fill="#fff" stroke="#E2E8F0"/>
+    <text x="264" y="102" fill="#0F172A" font-weight="600">AAPL</text><text x="376" y="102" fill="#0A9B62" font-weight="700" text-anchor="end">+1,2%</text>
+    <polyline points="264,120 284,116 304,118 324,112 344,114 364,108 376,110" fill="none" stroke="#0A9B62" stroke-width="1.5"/>
+    <rect x="252" y="142" width="136" height="52" rx="10" fill="#fff" stroke="#E2E8F0"/>
+    <text x="264" y="162" fill="#0F172A" font-weight="600">MSFT</text><text x="376" y="162" fill="#0A9B62" font-weight="700" text-anchor="end">+0,8%</text>
+    <polyline points="264,180 284,178 304,174 324,176 344,170 364,172 376,166" fill="none" stroke="#0A9B62" stroke-width="1.5"/>
+    <rect x="252" y="202" width="136" height="52" rx="10" fill="#fff" stroke="#E2E8F0"/>
+    <text x="264" y="222" fill="#0F172A" font-weight="600">ENI</text><text x="376" y="222" fill="#D92D20" font-weight="700" text-anchor="end">−0,4%</text>
+    <polyline points="264,236 284,240 304,238 324,244 344,242 364,246 376,248" fill="none" stroke="#D92D20" stroke-width="1.5"/>
+    <rect x="252" y="262" width="136" height="52" rx="10" fill="#fff" stroke="#E2E8F0"/>
+    <text x="264" y="282" fill="#0F172A" font-weight="600">VWCE</text><text x="376" y="282" fill="#0A9B62" font-weight="700" text-anchor="end">+0,3%</text>
+    <polyline points="264,298 284,296 304,300 324,294 344,296 364,292 376,290" fill="none" stroke="#0A9B62" stroke-width="1.5"/>
   </g>
-  <rect x="252" y="316" width="136" height="30" fill="#0C101A"/>
-  <text x="320" y="335" fill="#55617A" font-size="9" text-anchor="middle">FINNHUB · PWA · OFFLINE-READY</text>
-  <!-- side labels -->
-  <text x="32" y="60" fill="#7E8AA0" font-size="11" letter-spacing="2">STOCK TRACKER</text>
-  <text x="32" y="82" fill="#55617A" font-size="10">MULTI-PORTAFOGLIO</text>
-  <text x="32" y="100" fill="#55617A" font-size="10">QUOTAZIONI REAL-TIME</text>
-  <text x="608" y="340" fill="#55617A" font-size="10" text-anchor="end">INSTALLABILE ●</text>
+  <text x="320" y="344" fill="#94A3B8" font-size="9" text-anchor="middle">Finnhub · PWA · installabile</text>
+  <text x="32" y="60" fill="#0F172A" font-size="13" font-weight="700">Stock Tracker</text>
+  <text x="32" y="82" fill="#64748B" font-size="11">Multi-portafoglio</text>
+  <text x="32" y="100" fill="#64748B" font-size="11">Quotazioni real-time</text>
 </svg>

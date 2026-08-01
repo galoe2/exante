@@ -1,19 +1,19 @@
 ---
+import Logo from './Logo.astro';
 import market from '../data/market.json';
 import { fmtDate } from '../lib/utils';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pipeline = (market as any).pipeline;
 const pipelineLabel = pipeline?.etfs
-  ? `PIPELINE OK · ULTIMO RUN ${fmtDate(new Date(market.updated))} · ${pipeline.etfs} ETF`
+  ? `Dati aggiornati al ${fmtDate(new Date(market.updated)).toLowerCase()} · ${pipeline.etfs} ETF monitorati`
   : '';
 const items = [
-  { label: 'HOME', href: `${base}/` },
-  { label: 'BLOG', href: `${base}/blog/` },
-  { label: 'MERCATI', href: `${base}/mercati/` },
-  { label: 'CHI SONO', href: `${base}/chi-sono/` },
-  { label: 'LAB', href: `${base}/lab/` },
-  { label: 'CONTATTI', href: `${base}/contatti/` },
+  { label: 'Home', href: `${base}/` },
+  { label: 'Blog', href: `${base}/blog/` },
+  { label: 'Mercati', href: `${base}/mercati/` },
+  { label: 'Lab', href: `${base}/lab/` },
+  { label: 'Contatti', href: `${base}/contatti/` },
 ];
 const year = new Date().getFullYear();
 ---
@@ -21,10 +21,8 @@ const year = new Date().getFullYear();
 <footer>
   <div class="container grid">
     <div>
-      <div class="logo">EX ANTE</div>
-      <div class="tagline">
-        Prima che accada. Mercati, modelli, dati.<br />Il blog di Gennaro Aloe.
-      </div>
+      <div class="brand"><Logo size={26} /><span>Ex Ante</span></div>
+      <div class="tagline">Prima che accada.<br />Mercati, modelli, dati.</div>
     </div>
     <div class="nav">
       {items.map((item) => <a href={item.href}>{item.label}</a>)}
@@ -36,9 +34,9 @@ const year = new Date().getFullYear();
   </div>
   <div class="subbar-wrap">
     <div class="container subbar">
-      <span>© {year} GENNARO ALOE</span>
-      {pipelineLabel && <span class="pipeline">{pipelineLabel}</span>}
-      <span>EX-ANTE.IT</span>
+      <span>© {year} Ex Ante</span>
+      {pipelineLabel && <span>{pipelineLabel}</span>}
+      <span>ex-ante.it</span>
     </div>
   </div>
 </footer>
@@ -46,25 +44,28 @@ const year = new Date().getFullYear();
 <style>
   footer {
     border-top: 1px solid var(--border);
-    background: var(--bg-footer);
+    background: var(--bg-soft);
+    margin-top: 24px;
   }
   .grid {
-    padding-top: 48px;
-    padding-bottom: 40px;
+    padding-top: 44px;
+    padding-bottom: 36px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 36px;
   }
-  .logo {
-    font-family: var(--mono);
-    font-weight: 600;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    margin-bottom: 10px;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
   }
   .tagline {
-    font-size: 13px;
-    color: var(--text-dim);
+    font-size: 13.5px;
+    color: var(--text-muted);
     line-height: 1.7;
     max-width: 280px;
   }
@@ -74,29 +75,27 @@ const year = new Date().getFullYear();
     gap: 8px;
   }
   .nav a {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--text-dim);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
     width: max-content;
   }
   .nav a:hover { color: var(--text); }
   .disclaimer {
-    font-size: 12px;
+    font-size: 12.5px;
     color: var(--text-faint);
     line-height: 1.75;
-    max-width: 320px;
+    max-width: 340px;
   }
   .subbar-wrap { border-top: 1px solid var(--border); }
   .subbar {
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding-top: 14px;
+    padding-bottom: 14px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 12px;
-    font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 12px;
     color: var(--text-faint);
   }
 </style>

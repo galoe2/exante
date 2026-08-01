@@ -1,29 +1,36 @@
 /* ══════════════════════════════════════════════════════════
-   EX ANTE — design tokens e stili globali
-   Fedeli all'handoff: border-radius 0 ovunque, nessuna ombra,
-   gerarchia solo con bordi 1px e fondi.
+   EX ANTE — tema "business clean"
+   Bianco, Inter, card arrotondate con ombre leggere,
+   accent blu sobrio. Verde/rosso solo per i dati.
    ══════════════════════════════════════════════════════════ */
 
 :root {
-  --bg: #080B12;
-  --bg-panel: #0C101A;
-  --bg-panel-hover: #0E131F;
-  --bg-footer: #0A0D15;
-  --border: #182031;
-  --border-strong: #2C3850;
-  --text: #E6E9F0;
-  --text-body: #C9CFDA;
-  --text-muted: #97A1B4;
-  --text-dim: #7E8AA0;
-  --text-faint: #55617A;
-  --accent: #FF7A29; /* alternative approvate: #FFAE00, #2EDB7B */
-  --sans: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
-  --mono: 'IBM Plex Mono', monospace;
+  --bg: #FFFFFF;
+  --bg-soft: #F5F7FA;
+  --bg-panel: #FFFFFF;
+  --bg-panel-hover: #F8FAFC;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --text: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --text-dim: #64748B;
+  --text-faint: #94A3B8;
+  --accent: #3E5C8F;
+  --accent-strong: #33507F;
+  --accent-soft: #ECF1F8;
+  --pos: #0A9B62;
+  --pos-soft: #E6F5EF;
+  --neg: #D92D20;
+  --neg-soft: #FDECEA;
+  --sans: 'Inter', 'Helvetica Neue', sans-serif;
+  --mono: 'Inter', 'Helvetica Neue', sans-serif; /* stile coding dismesso */
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
 * { box-sizing: border-box; }
-
-html { scroll-behavior: auto; }
 
 body {
   margin: 0;
@@ -33,95 +40,116 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--accent); color: #080B12; }
+::selection { background: var(--accent); color: #fff; }
 
 a { color: var(--accent); text-decoration: none; }
-a:hover { color: var(--text); }
+a:hover { color: var(--accent-strong); }
 
 input::placeholder { color: var(--text-faint); }
 
-h1, h2, h3 { font-weight: 600; }
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
 
-.container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-.container-narrow { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+.container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+.container-narrow { max-width: 760px; margin: 0 auto; padding: 0 28px; }
 
-/* ── Label mono di sezione ─────────────────────────────── */
+/* ── Label di sezione ──────────────────────────────────── */
 .mono-label {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.14em;
-  color: var(--text-dim);
-  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
 }
 
 .kicker {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.16em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-soft);
   color: var(--accent);
-  text-transform: uppercase;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
 }
 
-/* ── Header di sezione (Home) ──────────────────────────── */
+/* ── Header di sezione ─────────────────────────────────── */
 .section-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  border-top: 1px solid var(--border);
-  padding-top: 20px;
 }
 
 .section-link {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--accent);
   white-space: nowrap;
 }
-.section-link:hover { color: var(--text); }
+.section-link:hover { color: var(--accent-strong); }
 
 /* ── Bottoni ───────────────────────────────────────────── */
 .btn-primary {
   display: inline-block;
   background: var(--accent);
-  color: #080B12;
+  color: #fff;
   border: none;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  padding: 13px 22px;
+  font-size: 14.5px;
+  padding: 13px 24px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: var(--shadow);
 }
-.btn-primary:hover { opacity: 0.85; color: #080B12; }
+.btn-primary:hover { background: var(--accent-strong); color: #fff; }
 
 .btn-secondary {
   display: inline-block;
-  background: transparent;
+  background: #fff;
   color: var(--text);
-  border: 1px solid var(--border-strong);
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  padding: 13px 22px;
+  border: 1px solid var(--border);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  padding: 13px 24px;
+  border-radius: 10px;
   cursor: pointer;
 }
-.btn-secondary:hover { border-color: var(--text-faint); color: var(--text); }
+.btn-secondary:hover { border-color: var(--border-strong); color: var(--text); background: var(--bg-panel-hover); }
+
+/* ── Chip rubrica ──────────────────────────────────────── */
+.chip-rubrica {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ── Card base ─────────────────────────────────────────── */
+.card-surface {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
 
 /* ── Corpo articolo ────────────────────────────────────── */
 .article-body {
-  font-size: 16px;
-  line-height: 1.85;
+  font-size: 16.5px;
+  line-height: 1.8;
   color: var(--text-body);
 }
 .article-body p { margin: 0 0 24px; }
 .article-body h2 {
   margin: 40px 0 16px;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text);
 }
 .article-body ul {
@@ -133,9 +161,9 @@ h1, h2, h3 { font-weight: 600; }
 }
 .article-body blockquote {
   margin: 32px 0;
-  padding: 4px 0 4px 22px;
-  border-left: 2px solid var(--accent);
-  font-size: 18px;
+  padding: 6px 0 6px 22px;
+  border-left: 3px solid var(--accent);
+  font-size: 19px;
   line-height: 1.6;
   color: var(--text);
   font-weight: 500;
@@ -145,13 +173,14 @@ h1, h2, h3 { font-weight: 600; }
   margin: 32px 0;
   border: 1px solid var(--border);
   background: var(--bg-panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   padding: 24px;
 }
 .article-body figure svg { display: block; width: 100%; height: auto; }
 .article-body figcaption {
   margin-top: 14px;
-  font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--text-faint);
   line-height: 1.6;
 }
@@ -160,23 +189,23 @@ h1, h2, h3 { font-weight: 600; }
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
+  font-size: 12px;
+  font-weight: 600;
   flex-wrap: wrap;
-  color: var(--text-dim);
+  color: var(--text-muted);
 }
-.article-body img { max-width: 100%; display: block; }
+.article-body img { max-width: 100%; display: block; border-radius: var(--radius-sm); }
 .article-body code {
-  font-family: var(--mono);
   font-size: 14px;
-  background: var(--bg-panel);
+  background: var(--bg-soft);
   border: 1px solid var(--border);
+  border-radius: 5px;
   padding: 1px 6px;
 }
 .article-body pre {
-  background: var(--bg-panel);
+  background: var(--bg-soft);
   border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 20px;
   overflow-x: auto;
   font-size: 13.5px;
@@ -197,10 +226,30 @@ h1, h2, h3 { font-weight: 600; }
   text-align: left;
 }
 .article-body th {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  background: var(--bg-panel);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-soft);
+}
+
+/* ── Stato vuoto ───────────────────────────────────────── */
+.empty-state {
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  padding: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  font-size: 14.5px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 640px;
+}
+.empty-state .nota {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  white-space: nowrap;
 }

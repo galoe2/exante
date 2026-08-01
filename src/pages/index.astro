@@ -4,20 +4,29 @@ import Base from '../layouts/Base.astro';
 import PostCard from '../components/PostCard.astro';
 import Newsletter from '../components/Newsletter.astro';
 import MarketPulse from '../components/MarketPulse.astro';
-import { sortPosts, fmtDate } from '../lib/utils';
 import market from '../data/market.json';
+import { sortPosts, fmtDate } from '../lib/utils';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = sortPosts(await getCollection('blog')).slice(0, 3);
 
-// Righe del pannello "pipeline log" nell'hero, dai dati reali dell'ultimo run
 const pipe = (market as any).pipeline ?? {};
-const logLines = [
-  `pipeline ${pipe.week ?? market.week} · ${fmtDate(new Date(market.updated))}`,
-  ...(pipe.etfs
-    ? [`${pipe.etfs} ETF analizzati · ${pipe.sectors} settori · ${pipe.regions} regioni`]
-    : []),
-  ...(pipe.regime ? [`regime: ${pipe.regime} · risk ${pipe.risk_score}/100`] : []),
+const ov = (market as any).overview ?? {};
+const updated = fmtDate(new Date(market.updated)).toLowerCase();
+
+function pct(v: number): string {
+  return `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(1).replace('.', ',')}%`;
+}
+
+const gain = ((market as any).gainers ?? [])[0];
+const lose = ((market as any).losers ?? [])[0];
+
+const sintesi = [
+  { label: 'S&P 500 (1 sett.)', value: pct(ov.spy_1w ?? 0), tone: (ov.spy_1w ?? 0) >= 0 ? 'pos' : 'neg', num: ov.spy_1w ?? 0 },
+  { label: 'Nasdaq 100', value: pct(ov.qqq_1w ?? 0), tone: (ov.qqq_1w ?? 0) >= 0 ? 'pos' : 'neg', num: ov.qqq_1w ?? 0 },
+  ...(ov.breadth ? [{ label: 'Ampiezza settoriale', value: ov.breadth.replace('/', ' / '), tone: '', num: null }] : []),
+  ...(ov.realized_vol != null ? [{ label: 'Volatilità realizzata', value: `${String(ov.realized_vol).replace('.', ',')}%`, tone: '', num: null }] : []),
+  ...(pipe.risk_score != null ? [{ label: 'Risk score', value: `${pipe.risk_score}/100`, tone: '', num: null }] : []),
 ];
 
 const homeLab = [
@@ -25,59 +34,85 @@ const homeLab = [
     idx: '01',
     nome: 'ETF Market Intelligence Dashboard',
     desc: 'Dashboard settimanale su 106 ETF con narrative sui regimi di mercato generate via AI.',
-    stack: 'PYTHON · CLAUDE API',
+    stack: 'Python · Claude API',
   },
   {
     idx: '02',
     nome: 'Alpha Scout',
-    desc: 'Agente in stile terminale che orchestra 5 chiamate sequenziali a Claude per screening settoriale e idee ordinate per ranking.',
-    stack: 'REACT · CLAUDE API',
+    desc: 'Agente che orchestra 5 chiamate sequenziali a Claude per screening settoriale e idee ordinate per ranking.',
+    stack: 'React · Claude API',
   },
   {
     idx: '03',
     nome: 'Kalman Adaptive Trading',
     desc: 'Sistema di trading algoritmico con filtro di Kalman adattivo, backtesting e risk management.',
-    stack: 'PYTHON',
+    stack: 'Python',
   },
 ];
 ---
 
 <Base title="Ex Ante — Prima che accada. Mercati, modelli, dati." active="home">
   <section class="container hero">
-    <div class="hero-grid">
-      <div>
-        <div class="kicker">MERCATI · MODELLI · DATI</div>
-        <h1>Prima che accada.</h1>
-        <p class="lead">
-          Ex Ante è il blog di Gennaro Aloe — analytics leader nel credit risk, data scientist e
-          investitore privato. Una lettura settimanale dei mercati e dei modelli che li descrivono:
-          anticipare con metodo, non giudicare col senno di poi.
-        </p>
-        <div class="cta">
-          <a class="btn-primary" href={`${base}/blog/`}>LEGGI IL BLOG</a>
-          <a class="btn-secondary" href={`${base}/chi-sono/`}>CHI SONO</a>
-        </div>
+    <div>
+      <div class="kicker"><span class="dot"></span>Aggiornato {updated}</div>
+      <h1>Prima che accada.</h1>
+      <p class="lead">
+        Analisi settimanale dei mercati basata sui dati: oltre 100 ETF monitorati, rotazioni
+        settoriali, segnali di regime. Le letture si scrivono prima — e si verificano poi.
+      </p>
+      <div class="cta">
+        <a class="btn-primary" href={`${base}/blog/`}>Leggi il blog</a>
+        <a class="btn-secondary" href={`${base}/mercati/`}>La dashboard</a>
       </div>
-      <aside class="terminal" aria-label="Ultimo run della pipeline">
-        <div class="term-head">
-          <span class="term-dot">●</span>
-          <span>EX-ANTE / PIPELINE</span>
+    </div>
+    <aside class="hero-card card-surface" aria-label="Sintesi settimanale">
+      <div class="hc-head">
+        <span>Sintesi settimanale{pipe.week ? ` · ${pipe.week}` : ''}</span>
+        {pipe.regime && <span class:list={['badge', pipe.regime === 'RISK-ON' ? 'up' : pipe.regime === 'RISK-OFF' ? 'dn' : 'nt']}>{pipe.regime}</span>}
+      </div>
+      {
+        sintesi.map((s) => (
+          <div class="hc-row">
+            <span>{s.label}</span>
+            <b class={s.tone}>{s.value}</b>
+          </div>
+        ))
+      }
+    </aside>
+  </section>
+
+  <section class="container kpis">
+    {
+      gain && (
+        <div class="kpi card-surface">
+          <div class="l">Top gainer · {gain.t} {gain.d}</div>
+          <div class="v">{pct(gain.w1)}</div>
+          <span class="d up">↑ miglior ETF della settimana</span>
         </div>
-        {
-          logLines.map((line, i) => (
-            <div class="term-line" style={`animation-delay:${300 + i * 450}ms`}>
-              <span class="prompt">&gt;</span> {line}
-            </div>
-          ))
-        }
-        <a
-          class="term-line term-link"
-          href={`${base}/mercati/`}
-          style={`animation-delay:${300 + logLines.length * 450}ms`}
-        >
-          <span class="prompt">&gt;</span> report pubblicato → /mercati<span class="cursor">▊</span>
-        </a>
-      </aside>
+      )
+    }
+    {
+      lose && (
+        <div class="kpi card-surface">
+          <div class="l">Top loser · {lose.t} {lose.d}</div>
+          <div class="v">{pct(lose.w1)}</div>
+          <span class="d dn">↓ peggior ETF della settimana</span>
+        </div>
+      )
+    }
+    {
+      pipe.etfs && (
+        <div class="kpi card-surface">
+          <div class="l">ETF monitorati</div>
+          <div class="v">{pipe.etfs}</div>
+          <span class="d nt">{pipe.sectors} settori · {pipe.regions} regioni</span>
+        </div>
+      )
+    }
+    <div class="kpi card-surface">
+      <div class="l">Cadenza</div>
+      <div class="v">Sabato</div>
+      <span class="d nt">report + lettura, ogni settimana</span>
     </div>
   </section>
 
@@ -86,9 +121,9 @@ const homeLab = [
   </section>
 
   <section class="container block">
-    <div class="section-header" style="margin-bottom:28px;">
-      <div class="mono-label">ULTIMI ARTICOLI</div>
-      <a class="section-link" href={`${base}/blog/`}>TUTTI →</a>
+    <div class="section-header" style="margin-bottom:24px;">
+      <div class="mono-label">Ultimi articoli</div>
+      <a class="section-link" href={`${base}/blog/`}>Tutti gli articoli →</a>
     </div>
     <div class="cards">
       {posts.map((post) => <PostCard post={post} />)}
@@ -96,47 +131,46 @@ const homeLab = [
   </section>
 
   <section class="container block">
-    <div class="section-header" style="margin-bottom:8px;">
-      <div class="mono-label">DAL LAB</div>
-      <a class="section-link" href={`${base}/lab/`}>TUTTI I PROGETTI →</a>
+    <div class="section-header" style="margin-bottom:24px;">
+      <div class="mono-label">Dal Lab</div>
+      <a class="section-link" href={`${base}/lab/`}>Tutti i progetti →</a>
     </div>
-    {
-      homeLab.map((proj) => (
-        <a class="lab-row" href={`${base}/lab/`}>
-          <span class="idx">{proj.idx}</span>
-          <div class="lab-main">
-            <div class="lab-name">{proj.nome}</div>
-            <div class="lab-desc">{proj.desc}</div>
-          </div>
-          <span class="lab-stack">{proj.stack}</span>
-        </a>
-      ))
-    }
+    <div class="lab-card card-surface">
+      {
+        homeLab.map((proj, i) => (
+          <a class:list={['lab-row', { first: i === 0 }]} href={`${base}/lab/`}>
+            <span class="idx">{proj.idx}</span>
+            <div class="lab-main">
+              <div class="lab-name">{proj.nome}</div>
+              <div class="lab-desc">{proj.desc}</div>
+            </div>
+            <span class="lab-stack">{proj.stack}</span>
+          </a>
+        ))
+      }
+    </div>
   </section>
 
   <section class="container block">
-    <div class="section-header" style="margin-bottom:28px;">
-      <div class="mono-label">COME FUNZIONA</div>
-    </div>
     <div class="steps">
-      <div class="step">
-        <div class="step-idx">01 — DATI</div>
+      <div class="step card-surface">
+        <div class="step-idx">01 · Dati</div>
         <div class="step-title">100+ ETF, ogni settimana</div>
         <div class="step-desc">
           Prezzi, momentum, flussi e news di settori e regioni, raccolti e normalizzati da una
           pipeline automatica.
         </div>
       </div>
-      <div class="step">
-        <div class="step-idx">02 — MODELLI</div>
+      <div class="step card-surface">
+        <div class="step-idx">02 · Modelli</div>
         <div class="step-title">Segnali e regime</div>
         <div class="step-desc">
-          Forza relativa, RSI, drawdown e proxy dei flussi diventano un quadro: risk-on, risk-off
-          o rotazione.
+          Forza relativa, RSI, drawdown e proxy dei flussi diventano un quadro: risk-on,
+          risk-off o rotazione.
         </div>
       </div>
-      <div class="step">
-        <div class="step-idx">03 — EX ANTE</div>
+      <div class="step card-surface">
+        <div class="step-idx">03 · Ex Ante</div>
         <div class="step-title">Report e lettura, ogni sabato</div>
         <div class="step-desc">
           La dashboard completa e l'articolo della settimana si pubblicano da soli. La tesi si
@@ -146,153 +180,133 @@ const homeLab = [
     </div>
   </section>
 
-  <section class="container" style="padding-bottom:96px;">
+  <section class="container" style="padding-bottom:72px;">
     <Newsletter variant="wide" />
   </section>
 </Base>
 
 <style>
-  .hero { padding-top: 96px; padding-bottom: 80px; }
-  .hero-grid {
+  .hero {
+    padding-top: 72px;
+    padding-bottom: 40px;
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
-    gap: 48px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+    gap: 56px;
     align-items: center;
   }
-  @media (max-width: 860px) {
-    .hero-grid { grid-template-columns: 1fr; }
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; }
   }
-  .terminal {
-    border: 1px solid var(--border);
-    background: var(--bg-panel);
-    padding: 18px 20px 20px;
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1.9;
-    color: var(--text-muted);
-  }
-  .term-head {
-    display: flex;
-    gap: 8px;
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--text-dim);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-    margin-bottom: 12px;
-  }
-  .term-dot { color: var(--accent); }
-  .term-line {
-    display: block;
-    opacity: 0;
-    animation: term-in 0.01s forwards;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .prompt { color: var(--accent); }
-  .term-link { color: var(--text); }
-  .term-link:hover { color: var(--accent); }
-  .cursor {
-    color: var(--accent);
-    animation: blink 1.1s steps(1) infinite;
-    margin-left: 4px;
-  }
-  @keyframes term-in { to { opacity: 1; } }
-  @keyframes blink { 50% { opacity: 0; } }
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 14px;
-  }
-  .step {
-    border: 1px solid var(--border);
-    background: var(--bg-panel);
-    padding: 24px;
-  }
-  .step-idx {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-    margin-bottom: 14px;
-  }
-  .step-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  .step-desc {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.65;
-  }
-  .kicker { margin-bottom: 22px; }
+  .kicker { margin-bottom: 20px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
   h1 {
     margin: 0;
-    font-weight: 600;
-    font-size: clamp(42px, 6.5vw, 68px);
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    font-size: clamp(42px, 6vw, 58px);
+    letter-spacing: -0.03em;
     line-height: 1.05;
     text-wrap: pretty;
   }
   .lead {
-    margin: 24px 0 0;
+    margin: 20px 0 0;
     font-size: 17px;
-    color: var(--text-muted);
-    max-width: 620px;
-    line-height: 1.7;
+    color: var(--text-body);
+    max-width: 540px;
+    line-height: 1.65;
     text-wrap: pretty;
   }
-  .cta {
+  .cta { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+  .hero-card { padding: 24px; }
+  .hc-head {
     display: flex;
-    gap: 12px;
-    margin-top: 36px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 12px;
   }
-  .block { padding-bottom: 80px; }
+  .badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .badge.up { background: var(--pos-soft); color: var(--pos); }
+  .badge.dn { background: var(--neg-soft); color: var(--neg); }
+  .badge.nt { background: var(--accent-soft); color: var(--accent); }
+  .hc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-body);
+  }
+  .hc-row b { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); }
+  .hc-row b.pos { color: var(--pos); }
+  .hc-row b.neg { color: var(--neg); }
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    padding-top: 8px;
+    padding-bottom: 24px;
+  }
+  .kpi { padding: 20px 22px; }
+  .kpi .l { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi .v {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi .d {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .d.up { background: var(--pos-soft); color: var(--pos); }
+  .d.dn { background: var(--neg-soft); color: var(--neg); }
+  .d.nt { background: var(--bg-soft); color: var(--text-muted); }
+  .block { padding-top: 24px; padding-bottom: 40px; }
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
   }
+  .lab-card { overflow: hidden; }
   .lab-row {
     display: grid;
-    grid-template-columns: 44px 1fr auto;
+    grid-template-columns: 48px 1fr auto;
     gap: 18px;
     align-items: baseline;
-    padding: 22px 4px;
-    border-bottom: 1px solid var(--border);
+    padding: 20px 26px;
+    border-top: 1px solid var(--border);
     color: var(--text);
   }
-  .lab-row:hover { background: var(--bg-panel); color: var(--text); }
-  .idx {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-faint);
-  }
+  .lab-row.first { border-top: none; }
+  .lab-row:hover { background: var(--bg-panel-hover); color: var(--text); }
+  .idx { font-size: 13px; font-weight: 700; color: var(--text-faint); }
   .lab-main { min-width: 240px; }
-  .lab-name {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-  .lab-desc {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    max-width: 560px;
-  }
-  .lab-stack {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    color: var(--text-dim);
-    white-space: nowrap;
-    text-align: right;
-  }
+  .lab-name { font-size: 16px; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.01em; }
+  .lab-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; max-width: 560px; }
+  .lab-stack { font-size: 12.5px; font-weight: 500; color: var(--text-faint); white-space: nowrap; text-align: right; }
   @media (max-width: 560px) {
-    .lab-row { grid-template-columns: 44px 1fr; }
+    .lab-row { grid-template-columns: 48px 1fr; }
     .lab-stack { display: none; }
   }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .step { padding: 26px; }
+  .step-idx { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+  .step-title { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .step-desc { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
 </style>

@@ -35,7 +35,7 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
 
 {
   type === 'rubrica' ? (
-    <Base title={`${active} — Blog — Ex Ante`} active="blog">
+    <Base title={`${active.charAt(0)}${active.slice(1).toLowerCase()} — Blog — Ex Ante`} active="blog">
       <BlogListing active={active} />
     </Base>
   ) : (
@@ -47,14 +47,13 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
     >
       <div class="container-narrow page">
         <a class="back" href={`${base}/blog/`}>
-          ← TUTTI GLI ARTICOLI
+          ← Tutti gli articoli
         </a>
         <div class="meta">
-          <span class="rubrica">{post!.data.rubrica}</span>
-          <span class="sep">/</span>
-          <span>{fmtDate(post!.data.date)}</span>
-          <span class="sep">/</span>
-          <span>{readingMinutes(post!)} MIN DI LETTURA</span>
+          <span class="chip-rubrica">{post!.data.rubrica}</span>
+          <span>{fmtDate(post!.data.date).toLowerCase()}</span>
+          <span class="sep">·</span>
+          <span>{readingMinutes(post!)} min di lettura</span>
         </div>
         <h1>{post!.data.title}</h1>
         <p class="lead">{post!.data.abstract}</p>
@@ -63,21 +62,21 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
         <div class="article-body">{Content && <Content />}</div>
 
         {post!.data.report && (
-          <a class="report-link" href={`${base}${post!.data.report}`}>
-            REPORT COMPLETO →
+          <a class="report-link btn-secondary" href={`${base}${post!.data.report}`}>
+            Apri il report completo →
           </a>
         )}
 
         {post!.data.rubrica === 'MERCATI' && (
-          <div class="disclaimer">
+          <div class="empty-state" style="margin-top:44px; max-width:none;">
             <span class="nota">NOTA</span>
-            <span class="testo">
+            <span>
               Questo contenuto ha scopo informativo e non costituisce consulenza finanziaria.
             </span>
           </div>
         )}
 
-        <div style="margin-top:44px;">
+        <div style="margin-top:36px;">
           <Newsletter variant="compact" />
         </div>
       </div>
@@ -86,71 +85,42 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
 }
 
 <style>
-  .page { padding-top: 64px; padding-bottom: 96px; }
+  .page { padding-top: 56px; padding-bottom: 80px; }
   .back {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--text-dim);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-muted);
   }
   .back:hover { color: var(--text); }
   .meta {
     display: flex;
-    gap: 14px;
+    gap: 12px;
+    align-items: center;
     flex-wrap: wrap;
-    margin: 36px 0 18px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--text-dim);
+    margin: 32px 0 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
   }
-  .meta .rubrica { color: var(--accent); }
-  .meta .sep { color: var(--border-strong); }
+  .sep { color: var(--border-strong); }
   h1 {
     margin: 0;
-    font-weight: 600;
+    font-weight: 800;
     font-size: clamp(30px, 4.5vw, 42px);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.025em;
     line-height: 1.15;
     text-wrap: pretty;
   }
   .lead {
-    margin: 22px 0 0;
-    font-size: 17.5px;
+    margin: 20px 0 0;
+    font-size: 18px;
     color: var(--text-muted);
     line-height: 1.65;
     text-wrap: pretty;
   }
   .divider {
     border-top: 1px solid var(--border);
-    margin: 36px 0;
+    margin: 32px 0;
   }
-  .report-link {
-    display: inline-block;
-    margin-top: 12px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-  }
-  .disclaimer {
-    margin-top: 44px;
-    border: 1px solid var(--border-strong);
-    background: var(--bg-panel);
-    padding: 18px 20px;
-    display: flex;
-    gap: 14px;
-    align-items: baseline;
-  }
-  .nota {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .testo {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.65;
-  }
+  .report-link { margin-top: 8px; }
 </style>

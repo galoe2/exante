@@ -11,23 +11,20 @@ const href = `${base}/blog/${post.id}/`;
 ---
 
 <article>
-  <a class="card" href={href}>
-    <div class="row">
-      <span class="rubrica">{post.data.rubrica}</span>
-      <span class="data">{fmtDate(post.data.date)}</span>
-    </div>
+  <a class="card card-surface" href={href}>
+    <span class="chip-rubrica">{post.data.rubrica}</span>
     <h3>{post.data.title}</h3>
     <p>{post.data.abstract}</p>
     <div class="foot">
-      <span class="lettura">{readingMinutes(post)} MIN DI LETTURA</span>
+      <span>{fmtDate(post.data.date).toLowerCase()}</span>
       {
         post.data.sparkline ? (
           <svg width="64" height="18" viewBox="0 0 64 18" style="display:block;">
             <polyline points={post.data.sparkline} fill="none" stroke="var(--accent)" stroke-width="1.5" />
           </svg>
-        ) : post.data.stat ? (
-          <span class="stat">{post.data.stat}</span>
-        ) : null
+        ) : (
+          <span>{readingMinutes(post)} min</span>
+        )
       }
     </div>
   </a>
@@ -36,44 +33,32 @@ const href = `${base}/blog/${post.id}/`;
 <style>
   article { display: flex; }
   .card {
-    border: 1px solid var(--border);
-    background: var(--bg-panel);
-    padding: 24px;
+    padding: 26px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     color: var(--text);
     flex: 1;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
   }
-  .card:hover { border-color: var(--border-strong); color: var(--text); }
-  .row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+  .card:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06), 0 8px 20px rgba(15, 23, 42, 0.08);
   }
-  .rubrica {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-  }
-  .data {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-  }
+  .chip-rubrica { align-self: flex-start; }
   h3 {
     margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.4;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
     text-wrap: pretty;
   }
   p {
     margin: 0;
-    font-size: 13.5px;
-    color: var(--text-muted);
+    font-size: 14px;
+    color: var(--text-body);
     line-height: 1.6;
     flex: 1;
   }
@@ -83,12 +68,9 @@ const href = `${base}/blog/${post.id}/`;
     justify-content: space-between;
     gap: 12px;
     border-top: 1px solid var(--border);
-    padding-top: 12px;
-  }
-  .lettura, .stat {
-    font-family: var(--mono);
-    font-size: 10.5px;
+    padding-top: 14px;
+    font-size: 12.5px;
+    font-weight: 500;
     color: var(--text-faint);
   }
-  .stat { color: var(--text-dim); }
 </style>

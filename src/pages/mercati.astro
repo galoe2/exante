@@ -41,7 +41,7 @@ const archive = reports.slice(1);
           <div class="meta">
             <span class="week">{latest.week}</span>
             <a class="section-link" href={`${base}/reports/${latest.file}`} target="_blank">
-              APRI A SCHERMO INTERO →
+              Apri a schermo intero →
             </a>
           </div>
         )
@@ -71,8 +71,8 @@ const archive = reports.slice(1);
     {
       archive.length > 0 && (
         <div class="archive">
-          <div class="section-header" style="margin-bottom:8px;">
-            <div class="mono-label">ARCHIVIO REPORT</div>
+          <div class="section-header" style="margin-bottom:12px;">
+            <div class="mono-label">Archivio report</div>
           </div>
           {archive.map((r) => (
             <a class="arc-row" href={`${base}/reports/${r.file}`} target="_blank">
@@ -88,7 +88,7 @@ const archive = reports.slice(1);
 </Base>
 
 <style>
-  .page { padding-top: 72px; padding-bottom: 96px; }
+  .page { padding-top: 64px; padding-bottom: 80px; }
   .head {
     display: flex;
     align-items: flex-end;
@@ -99,13 +99,13 @@ const archive = reports.slice(1);
   }
   h1 {
     margin: 0 0 10px;
-    font-weight: 600;
-    font-size: clamp(32px, 4.5vw, 44px);
-    letter-spacing: -0.01em;
+    font-weight: 800;
+    font-size: clamp(34px, 4.5vw, 44px);
+    letter-spacing: -0.03em;
   }
   .lead {
     margin: 0;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text-muted);
     max-width: 560px;
     line-height: 1.7;
@@ -118,14 +118,16 @@ const archive = reports.slice(1);
     padding-bottom: 4px;
   }
   .week {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 12.5px;
+    font-weight: 600;
     color: var(--text-faint);
   }
   .frame-wrap {
     border: 1px solid var(--border);
     background: var(--bg-panel);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
   }
   iframe {
     display: block;
@@ -135,20 +137,21 @@ const archive = reports.slice(1);
     background: var(--bg);
   }
   .empty {
-    border: 1px solid var(--border-strong);
-    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    border-radius: var(--radius);
     padding: 32px;
     display: flex;
     gap: 14px;
     align-items: baseline;
-    font-size: 14px;
+    font-size: 14.5px;
     color: var(--text-muted);
     line-height: 1.65;
   }
   .nota {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     color: var(--accent);
     white-space: nowrap;
   }
@@ -158,25 +161,23 @@ const archive = reports.slice(1);
     grid-template-columns: 120px 1fr auto;
     gap: 18px;
     align-items: baseline;
-    padding: 16px 4px;
+    padding: 15px 10px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
+    border-radius: 8px;
   }
-  .arc-row:hover { background: var(--bg-panel); color: var(--text); }
+  .arc-row:hover { background: var(--bg-panel-hover); color: var(--text); }
   .arc-week {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 13px;
+    font-weight: 700;
     color: var(--accent);
   }
   .arc-file {
-    font-family: var(--mono);
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-muted);
   }
   .arc-arrow {
-    font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-faint);
   }
 </style>

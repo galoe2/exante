@@ -15,15 +15,15 @@ Il punto di partenza è sempre la performance relativa: settori contro indice, f
 
 <figure>
   <div class="fig-head">
-    <span>PERFORMANCE RELATIVA — 3 MESI</span>
-    <span><span style="color:var(--accent);">— INDUSTRIALI</span>&nbsp;&nbsp;<span style="color:#55617A;">— DIFESA</span></span>
+    <span>Performance relativa — 3 mesi</span>
+    <span><span style="color:var(--accent);">— Industriali</span>&nbsp;&nbsp;<span style="color:#94A3B8;">— Difesa</span></span>
   </div>
   <svg viewBox="0 0 640 180">
-    <line x1="0" y1="45" x2="640" y2="45" stroke="#182031" stroke-width="1"></line>
-    <line x1="0" y1="90" x2="640" y2="90" stroke="#182031" stroke-width="1"></line>
-    <line x1="0" y1="135" x2="640" y2="135" stroke="#182031" stroke-width="1"></line>
+    <line x1="0" y1="45" x2="640" y2="45" stroke="#E2E8F0" stroke-width="1"></line>
+    <line x1="0" y1="90" x2="640" y2="90" stroke="#E2E8F0" stroke-width="1"></line>
+    <line x1="0" y1="135" x2="640" y2="135" stroke="#E2E8F0" stroke-width="1"></line>
     <polyline points="0,130 60,122 120,126 180,110 240,104 300,96 360,86 420,90 480,72 540,60 600,52 640,44" fill="none" stroke="var(--accent)" stroke-width="2"></polyline>
-    <polyline points="0,60 60,54 120,58 180,66 240,62 300,74 360,80 420,92 480,98 540,108 600,104 640,112" fill="none" stroke="#55617A" stroke-width="2"></polyline>
+    <polyline points="0,60 60,54 120,58 180,66 240,62 300,74 360,80 420,92 480,98 540,108 600,104 640,112" fill="none" stroke="#94A3B8" stroke-width="2"></polyline>
   </svg>
   <figcaption>Rapporto settore/indice, base 100. Fonte: elaborazione propria su dati pubblici.</figcaption>
 </figure>

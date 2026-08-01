@@ -17,7 +17,7 @@ for (const p of all) counts[p.data.rubrica] = (counts[p.data.rubrica] ?? 0) + 1;
 
 const filters = ['TUTTI', ...RUBRICHE].map((id) => ({
   id,
-  label: `${id} · ${counts[id] ?? 0}`,
+  label: `${id.charAt(0)}${id.slice(1).toLowerCase()} · ${counts[id] ?? 0}`,
   href: id === 'TUTTI' ? `${base}/blog/` : `${base}/blog/${rubricaSlug(id)}/`,
 }));
 
@@ -42,7 +42,7 @@ const desc = RUBRICA_DESC[active] ?? '';
 
   {
     posts.length === 0 && (
-      <div class="empty">
+      <div class="empty-state" style="margin-top:28px;">
         <span class="nota">IN ARRIVO</span>
         <span>Non ci sono ancora articoli in questa rubrica.</span>
       </div>
@@ -53,11 +53,11 @@ const desc = RUBRICA_DESC[active] ?? '';
     {
       posts.map((post) => (
         <article>
-          <a class="row" href={`${base}/blog/${post.id}/`}>
+          <a class="row card-surface" href={`${base}/blog/${post.id}/`}>
             <div class="meta">
-              <span class="rubrica">{post.data.rubrica}</span>
-              <span>{fmtDate(post.data.date)}</span>
-              <span>{readingMinutes(post)} MIN</span>
+              <span class="chip-rubrica">{post.data.rubrica}</span>
+              <span class="m">{fmtDate(post.data.date).toLowerCase()}</span>
+              <span class="m">{readingMinutes(post)} min</span>
             </div>
             <div class="body">
               <h2>{post.data.title}</h2>
@@ -71,16 +71,16 @@ const desc = RUBRICA_DESC[active] ?? '';
 </div>
 
 <style>
-  .page { padding-top: 72px; padding-bottom: 96px; }
+  .page { padding-top: 64px; padding-bottom: 80px; }
   h1 {
     margin: 0 0 10px;
-    font-weight: 600;
-    font-size: clamp(32px, 4.5vw, 44px);
-    letter-spacing: -0.01em;
+    font-weight: 800;
+    font-size: clamp(34px, 4.5vw, 44px);
+    letter-spacing: -0.03em;
   }
   .lead {
-    margin: 0 0 40px;
-    font-size: 15px;
+    margin: 0 0 32px;
+    font-size: 16px;
     color: var(--text-muted);
     max-width: 560px;
     line-height: 1.7;
@@ -89,96 +89,78 @@ const desc = RUBRICA_DESC[active] ?? '';
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 16px;
   }
   .chip {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    padding: 8px 13px;
-    color: var(--text-dim);
-    background: transparent;
-    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: var(--text-muted);
+    background: var(--bg-soft);
   }
-  .chip:hover { border-color: var(--text-faint); color: var(--text-dim); }
+  .chip:hover { color: var(--text); }
   .chip.active {
-    color: #080b12;
+    color: #fff;
     background: var(--accent);
-    border-color: var(--accent);
   }
-  .chip.active:hover { color: #080b12; }
+  .chip.active:hover { color: #fff; }
   .rubrica-desc {
-    margin: 18px 0 0;
-    font-size: 13.5px;
-    color: var(--text-dim);
-    max-width: 620px;
-    line-height: 1.65;
-    border-left: 2px solid var(--accent);
-    padding-left: 14px;
-  }
-  .empty {
-    margin-top: 24px;
-    border: 1px solid var(--border-strong);
-    background: var(--bg-panel);
-    padding: 32px;
-    display: flex;
-    gap: 14px;
-    align-items: baseline;
+    margin: 22px 0 0;
     font-size: 14px;
     color: var(--text-muted);
+    max-width: 640px;
     line-height: 1.65;
-    max-width: 620px;
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
   }
-  .nota {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-    white-space: nowrap;
+  .list {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
-  .list { margin-top: 24px; }
   .row {
     display: grid;
-    grid-template-columns: minmax(150px, 190px) 1fr;
-    gap: 24px;
-    padding: 26px 4px;
-    border-bottom: 1px solid var(--border);
+    grid-template-columns: minmax(140px, 170px) 1fr;
+    gap: 26px;
+    padding: 26px 28px;
     color: var(--text);
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
   }
-  .row:hover { background: var(--bg-panel); color: var(--text); }
+  .row:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06), 0 8px 20px rgba(15, 23, 42, 0.08);
+  }
   .meta {
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    font-family: var(--mono);
+    align-items: flex-start;
+    gap: 9px;
   }
-  .meta .rubrica {
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-  }
-  .meta span:not(.rubrica) {
-    font-size: 11px;
+  .meta .m {
+    font-size: 12.5px;
+    font-weight: 500;
     color: var(--text-faint);
   }
   .body { min-width: 220px; }
   .body h2 {
     margin: 0 0 8px;
     font-size: 20px;
-    font-weight: 600;
-    line-height: 1.4;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
     text-wrap: pretty;
   }
   .body p {
     margin: 0;
-    font-size: 14px;
-    color: var(--text-muted);
+    font-size: 14.5px;
+    color: var(--text-body);
     line-height: 1.65;
     max-width: 640px;
   }
   @media (max-width: 560px) {
-    .row { grid-template-columns: 1fr; gap: 10px; }
+    .row { grid-template-columns: 1fr; gap: 12px; }
     .meta { flex-direction: row; align-items: baseline; gap: 14px; }
   }
 </style>

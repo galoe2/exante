@@ -8,5 +8,6 @@ export default defineConfig({
   trailingSlash: 'ignore',
   redirects: {
     '/dashboard': '/mercati',
+    '/chi-sono': '/contatti',
   },
 });

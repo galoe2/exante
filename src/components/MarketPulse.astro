@@ -1,25 +1,15 @@
 ---
-// Market Pulse settimanale in home: top movers e RSI estremi dalla dashboard ETF.
-// I dati arrivano da src/data/market.json, riscritto ogni settimana da
-// ETF_Dashboard/src/make_post.py.
+// Market Pulse: top movers e RSI estremi dalla dashboard ETF (src/data/market.json,
+// riscritto ogni settimana dalla pipeline). L'overview vive nella card dell'hero.
 import data from '../data/market.json';
 import { fmtDate } from '../lib/utils';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const updated = fmtDate(new Date(data.updated));
-const ov = data.overview ?? {};
+const updated = fmtDate(new Date(data.updated)).toLowerCase();
 
 function pct(v: number): string {
-  return `${v > 0 ? '+' : ''}${v.toFixed(1).replace('.', ',')}%`;
+  return `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(1).replace('.', ',')}%`;
 }
-
-const stats = [
-  { label: 'SPY 1S', value: pct(ov.spy_1w ?? 0), tone: (ov.spy_1w ?? 0) > 0 ? 'pos' : 'neg', num: ov.spy_1w ?? 0, fmt: 'pct' },
-  { label: 'QQQ 1S', value: pct(ov.qqq_1w ?? 0), tone: (ov.qqq_1w ?? 0) > 0 ? 'pos' : 'neg', num: ov.qqq_1w ?? 0, fmt: 'pct' },
-  ...(ov.breadth ? [{ label: 'BREADTH', value: ov.breadth, tone: '', num: null, fmt: '' }] : []),
-  ...(ov.realized_vol != null ? [{ label: 'VOL 21G', value: `${String(ov.realized_vol).replace('.', ',')}%`, tone: '', num: ov.realized_vol, fmt: 'vol' }] : []),
-  ...(ov.risk_score != null ? [{ label: 'RISK', value: `${ov.risk_score}/100`, tone: '', num: null, fmt: '' }] : []),
-];
 
 interface Row {
   t: string;
@@ -30,51 +20,34 @@ interface Row {
 
 const quadrants: { title: string; tone: string; rows: Row[] }[] = [
   {
-    title: 'TOP GAINERS — 1S',
-    tone: 'pos',
+    title: 'Top gainers · 1 settimana',
+    tone: 'up',
     rows: (data.gainers ?? []).map((e: any) => ({ t: e.t, d: e.d, value: pct(e.w1), tone: 'pos' })),
   },
   {
-    title: 'TOP LOSERS — 1S',
-    tone: 'neg',
+    title: 'Top losers · 1 settimana',
+    tone: 'dn',
     rows: (data.losers ?? []).map((e: any) => ({ t: e.t, d: e.d, value: pct(e.w1), tone: 'neg' })),
   },
   {
-    title: 'MOST OVERBOUGHT — RSI',
-    tone: 'pos',
+    title: 'Ipercomprato · RSI',
+    tone: 'up',
     rows: (data.overbought ?? []).map((e: any) => ({ t: e.t, d: e.d, value: `${Math.round(e.rsi)}`, tone: 'pos' })),
   },
   {
-    title: 'MOST OVERSOLD — RSI',
-    tone: 'neg',
+    title: 'Ipervenduto · RSI',
+    tone: 'dn',
     rows: (data.oversold ?? []).map((e: any) => ({ t: e.t, d: e.d, value: `${Math.round(e.rsi)}`, tone: 'neg' })),
   },
 ].filter((q) => q.rows.length > 0);
 ---
 
-<div class="section-header" style="margin-bottom:20px;">
-  <div class="mono-label">MARKET PULSE</div>
-  <span class="updated">AGGIORNATO {updated}</span>
+<div class="section-header" style="margin-bottom:24px;">
+  <div class="mono-label">Market Pulse</div>
+  <span class="updated">Aggiornato {updated}</span>
 </div>
 
-<div class="panel">
-  <div class="stats">
-    {
-      stats.map((s) => (
-        <div class="stat">
-          <span class="stat-label">{s.label}</span>
-          <span
-            class:list={['stat-value', s.tone]}
-            data-countup={s.num != null ? s.num : undefined}
-            data-fmt={s.num != null ? s.fmt : undefined}
-          >
-            {s.value}
-          </span>
-        </div>
-      ))
-    }
-  </div>
-
+<div class="panel card-surface">
   <div class="quads">
     {
       quadrants.map((q) => (
@@ -96,7 +69,7 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
     data.comment && (
       <div class="comment-row">
         <p class="comment">{data.comment}</p>
-        <a class="section-link" href={`${base}/mercati/`}>DASHBOARD COMPLETA →</a>
+        <a class="section-link" href={`${base}/mercati/`}>La dashboard completa →</a>
       </div>
     )
   }
@@ -104,44 +77,12 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
 
 <style>
   .updated {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    color: var(--text-faint);
-    white-space: nowrap;
-  }
-  .panel {
-    border: 1px solid var(--border);
-    background: var(--bg-panel);
-  }
-  .stats {
-    display: flex;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-  }
-  .stat {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 14px 20px;
-    border-right: 1px solid var(--border);
-    flex: 1;
-    min-width: 130px;
-    white-space: nowrap;
-  }
-  .stat:last-child { border-right: none; }
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    color: var(--text-dim);
-  }
-  .stat-value {
-    font-family: var(--mono);
     font-size: 13px;
+    color: var(--text-faint);
     font-weight: 500;
-    color: var(--text);
+    white-space: nowrap;
   }
+  .panel { overflow: hidden; }
   .quads {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -149,48 +90,43 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
   .quad {
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
+    padding-bottom: 10px;
   }
   .quad:nth-child(2n) { border-right: none; }
   .quad:nth-last-child(-n + 2) { border-bottom: none; }
   .quad-hd {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    padding: 12px 20px 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 14px 24px 12px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
-  .quad-hd.pos { color: var(--accent); }
-  .quad-hd.neg { color: var(--text-dim); }
+  .quad-hd.up { color: var(--pos); background: var(--pos-soft); }
+  .quad-hd.dn { color: var(--neg); background: var(--neg-soft); }
   .row {
     display: grid;
     grid-template-columns: 58px 1fr auto;
     gap: 12px;
     align-items: baseline;
-    padding: 6px 20px;
+    padding: 7px 24px;
   }
   .row:hover { background: var(--bg-panel-hover); }
-  .tk {
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-  }
+  .tk { font-size: 13px; font-weight: 700; color: var(--text); }
   .desc {
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--text-muted);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .val {
-    font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
     text-align: right;
   }
-  .val.pos { color: var(--accent); }
-  .val.neg { color: var(--text-muted); }
+  .val.pos { color: var(--pos); }
+  .val.neg { color: var(--neg); }
   .comment-row {
     display: flex;
     align-items: baseline;
@@ -198,16 +134,15 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
     gap: 24px;
     flex-wrap: wrap;
     border-top: 1px solid var(--border);
-    padding: 16px 20px 18px;
+    padding: 18px 24px;
+    background: var(--bg-soft);
   }
   .comment {
     margin: 0;
-    font-size: 13.5px;
-    color: var(--text-muted);
+    font-size: 14px;
+    color: var(--text-body);
     line-height: 1.65;
-    max-width: 680px;
-    border-left: 2px solid var(--accent);
-    padding-left: 14px;
+    max-width: 700px;
   }
   @media (max-width: 640px) {
     .quads { grid-template-columns: 1fr; }
@@ -216,43 +151,3 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
     .quad:last-child { border-bottom: none; }
   }
 </style>
-
-<script>
-  // Count-up dei valori percentuali quando la striscia entra nel viewport.
-  // astro:page-load copre sia il primo caricamento sia le view transitions.
-  function fmtVal(v: number, fmt: string): string {
-    const s = Math.abs(v).toFixed(1).replace('.', ',');
-    if (fmt === 'pct') return `${v > 0 ? '+' : v < 0 ? '-' : ''}${s}%`;
-    return `${s}%`;
-  }
-
-  function animate(el: HTMLElement) {
-    const target = parseFloat(el.dataset.countup ?? '0');
-    const fmt = el.dataset.fmt ?? 'pct';
-    const t0 = performance.now();
-    const dur = 900;
-    function tick(t: number) {
-      const p = Math.min((t - t0) / dur, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmtVal(target * eased, fmt);
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-
-  function init() {
-    const els = document.querySelectorAll<HTMLElement>('[data-countup]');
-    if (!els.length) return;
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          animate(e.target as HTMLElement);
-          io.unobserve(e.target);
-        }
-      }
-    });
-    els.forEach((el) => io.observe(el));
-  }
-
-  document.addEventListener('astro:page-load', init);
-</script>

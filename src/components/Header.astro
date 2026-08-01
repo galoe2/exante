@@ -1,4 +1,6 @@
 ---
+import Logo from './Logo.astro';
+
 interface Props {
   active?: string;
 }
@@ -6,20 +8,19 @@ const { active = '' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const items = [
-  { id: 'home', label: 'HOME', href: `${base}/` },
-  { id: 'blog', label: 'BLOG', href: `${base}/blog/` },
-  { id: 'mercati', label: 'MERCATI', href: `${base}/mercati/` },
-  { id: 'chi-sono', label: 'CHI SONO', href: `${base}/chi-sono/` },
-  { id: 'lab', label: 'LAB', href: `${base}/lab/` },
-  { id: 'contatti', label: 'CONTATTI', href: `${base}/contatti/` },
+  { id: 'home', label: 'Home', href: `${base}/` },
+  { id: 'blog', label: 'Blog', href: `${base}/blog/` },
+  { id: 'mercati', label: 'Mercati', href: `${base}/mercati/` },
+  { id: 'lab', label: 'Lab', href: `${base}/lab/` },
+  { id: 'contatti', label: 'Contatti', href: `${base}/contatti/` },
 ];
 ---
 
 <header>
   <div class="container inner">
     <a class="brand" href={`${base}/`}>
-      <span class="logo">EX&nbsp;ANTE</span>
-      <span class="author">Gennaro Aloe</span>
+      <Logo size={30} />
+      <span class="wordmark">Ex Ante</span>
     </a>
     <nav>
       {
@@ -38,13 +39,13 @@ const items = [
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(8, 11, 18, 0.92);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
   }
   .inner {
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -52,36 +53,30 @@ const items = [
   }
   .brand {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
   }
-  .logo {
-    font-family: var(--mono);
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.08em;
+  .wordmark {
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
     color: var(--text);
-  }
-  .author {
-    font-size: 12px;
-    color: var(--text-faint);
   }
   nav {
     display: flex;
-    gap: 2px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .nav-item {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    padding: 8px 11px;
-    color: var(--text-dim);
-    border-bottom: 2px solid transparent;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: var(--text-muted);
   }
-  .nav-item:hover { color: var(--text); }
+  .nav-item:hover { color: var(--text); background: var(--bg-panel-hover); }
   .nav-item.active {
-    color: var(--text);
-    border-bottom-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
   }
 </style>

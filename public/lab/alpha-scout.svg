@@ -1,35 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="ui-monospace, 'IBM Plex Mono', monospace">
-  <rect width="640" height="360" fill="#0C101A"/>
-  <text x="32" y="44" fill="#FF7A29" font-size="11" letter-spacing="2">● ALPHA SCOUT</text>
-  <text x="608" y="44" fill="#55617A" font-size="11" text-anchor="end">5 CALL SEQUENZIALI</text>
-  <line x1="32" y1="58" x2="608" y2="58" stroke="#182031"/>
-  <g font-size="11">
-    <text x="32" y="88" fill="#7E8AA0">&gt; step 1/5 — regime macro</text>
-    <text x="230" y="88" fill="#2EDB7B" opacity="0">.</text>
-    <text x="32" y="112" fill="#7E8AA0">&gt; step 2/5 — screening settoriale</text>
-    <text x="32" y="136" fill="#7E8AA0">&gt; step 3/5 — generazione idee</text>
-    <text x="32" y="160" fill="#E6E9F0">&gt; step 4/5 — ranking</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="Inter, 'Helvetica Neue', sans-serif">
+  <rect width="640" height="360" fill="#FFFFFF"/>
+  <text x="32" y="44" fill="#0F172A" font-size="13" font-weight="700">Alpha Scout — Ranking settoriale</text>
+  <text x="608" y="44" fill="#94A3B8" font-size="11" text-anchor="end">5 passi sequenziali</text>
+  <line x1="32" y1="58" x2="608" y2="58" stroke="#E2E8F0"/>
+  <g font-size="11" fill="#64748B">
+    <text x="32" y="86">1. Regime macro</text>
+    <text x="150" y="86" fill="#0A9B62">✓</text>
+    <text x="180" y="86">2. Screening</text>
+    <text x="272" y="86" fill="#0A9B62">✓</text>
+    <text x="300" y="86">3. Idee</text>
+    <text x="352" y="86" fill="#0A9B62">✓</text>
+    <text x="380" y="86" fill="#0F172A" font-weight="600">4. Ranking…</text>
   </g>
-  <g font-size="11">
-    <text x="56" y="196" fill="#E6E9F0">01 SEMICONDUTTORI</text>
-    <rect x="240" y="186" width="300" height="10" fill="#182031"/>
-    <rect x="240" y="186" width="285" height="10" fill="#FF7A29"/>
-    <text x="608" y="196" fill="#FF7A29" text-anchor="end">9,5</text>
+  <g font-size="12">
+    <text x="56" y="140" fill="#0F172A" font-weight="600">01 Semiconduttori</text>
+    <rect x="250" y="129" width="290" height="12" rx="6" fill="#EDF1F5"/>
+    <rect x="250" y="129" width="276" height="12" rx="6" fill="#3E5C8F"/>
+    <text x="608" y="140" fill="#0F172A" font-weight="700" text-anchor="end">9,5</text>
 
-    <text x="56" y="226" fill="#E6E9F0">02 INFRA CLOUD</text>
-    <rect x="240" y="216" width="300" height="10" fill="#182031"/>
-    <rect x="240" y="216" width="246" height="10" fill="#FF7A29" opacity="0.75"/>
-    <text x="608" y="226" fill="#97A1B4" text-anchor="end">8,2</text>
+    <text x="56" y="180" fill="#0F172A" font-weight="600">02 Infra cloud</text>
+    <rect x="250" y="169" width="290" height="12" rx="6" fill="#EDF1F5"/>
+    <rect x="250" y="169" width="238" height="12" rx="6" fill="#3E5C8F" opacity="0.75"/>
+    <text x="608" y="180" fill="#334155" text-anchor="end">8,2</text>
 
-    <text x="56" y="256" fill="#E6E9F0">03 DIFESA EU</text>
-    <rect x="240" y="246" width="300" height="10" fill="#182031"/>
-    <rect x="240" y="246" width="204" height="10" fill="#FF7A29" opacity="0.5"/>
-    <text x="608" y="256" fill="#97A1B4" text-anchor="end">6,8</text>
+    <text x="56" y="220" fill="#0F172A" font-weight="600">03 Difesa EU</text>
+    <rect x="250" y="209" width="290" height="12" rx="6" fill="#EDF1F5"/>
+    <rect x="250" y="209" width="197" height="12" rx="6" fill="#3E5C8F" opacity="0.5"/>
+    <text x="608" y="220" fill="#334155" text-anchor="end">6,8</text>
 
-    <text x="56" y="286" fill="#97A1B4">04 UTILITIES</text>
-    <rect x="240" y="276" width="300" height="10" fill="#182031"/>
-    <rect x="240" y="276" width="141" height="10" fill="#FF7A29" opacity="0.3"/>
-    <text x="608" y="286" fill="#55617A" text-anchor="end">4,7</text>
+    <text x="56" y="260" fill="#64748B">04 Utilities</text>
+    <rect x="250" y="249" width="290" height="12" rx="6" fill="#EDF1F5"/>
+    <rect x="250" y="249" width="136" height="12" rx="6" fill="#3E5C8F" opacity="0.3"/>
+    <text x="608" y="260" fill="#94A3B8" text-anchor="end">4,7</text>
   </g>
-  <text x="32" y="330" fill="#55617A" font-size="11">&gt; step 5/5 — nota di sintesi<tspan fill="#FF7A29"> ▊</tspan></text>
+  <rect x="32" y="300" width="576" height="34" rx="8" fill="#F5F7FA"/>
+  <text x="48" y="321" fill="#64748B" font-size="11.5">5. Nota di sintesi: le prime tre idee con i loro "se" espliciti</text>
 </svg>

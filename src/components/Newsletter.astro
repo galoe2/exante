@@ -1,5 +1,5 @@
 ---
-// Variante "wide" (Home) o "compact" (articolo, contatti).
+// Variante "wide" (banda in home) o "compact" (articolo, contatti).
 // Il form è solo UI: collegare action a un provider (Buttondown/MailerLite/ConvertKit).
 interface Props {
   variant?: 'wide' | 'compact';
@@ -9,23 +9,22 @@ const { variant = 'compact' } = Astro.props;
 
 <div class:list={['box', variant]}>
   <div class="content">
-    <div class="label">NEWSLETTER</div>
     <div class="title">La lettura dei mercati, ogni settimana nella tua inbox.</div>
     <div class="sub">Una email a settimana, zero rumore. Disiscrizione in un click.</div>
   </div>
   <form class="form" action="#" method="post">
     <input type="email" name="email" placeholder="la-tua-email@esempio.it" required />
-    <button type="submit" class="btn-primary" style="padding:12px 20px;">ISCRIVITI</button>
+    <button type="submit" class="btn-primary" style="padding:12px 22px;">Iscriviti</button>
   </form>
 </div>
 
 <style>
   .box {
-    border: 1px solid var(--border);
-    background: var(--bg-panel);
+    background: var(--bg-soft);
+    border-radius: 20px;
   }
   .box.wide {
-    padding: 44px clamp(24px, 5vw, 48px);
+    padding: 36px clamp(24px, 4vw, 44px);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -33,30 +32,24 @@ const { variant = 'compact' } = Astro.props;
     gap: 28px;
   }
   .box.compact {
-    padding: 32px;
+    padding: 28px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
-  .wide .content { max-width: 460px; }
-  .label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    color: var(--accent);
-  }
-  .wide .label { margin-bottom: 12px; }
+  .wide .content { max-width: 520px; }
   .title {
-    font-size: 21px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     line-height: 1.4;
     text-wrap: pretty;
   }
-  .compact .title { font-size: 18px; line-height: 1.45; }
+  .compact .title { font-size: 17.5px; }
   .sub {
-    font-size: 13px;
-    color: var(--text-faint);
-    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 8px;
   }
   .compact .sub { margin-top: 0; }
   .form {
@@ -65,14 +58,16 @@ const { variant = 'compact' } = Astro.props;
     flex-wrap: wrap;
   }
   input {
-    background: var(--bg);
-    border: 1px solid var(--border-strong);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
     color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
+    font-family: var(--sans);
+    font-size: 14px;
     padding: 12px 14px;
     outline: none;
   }
-  .wide input { width: min(260px, 60vw); padding: 13px 14px; }
+  input:focus { border-color: var(--accent); }
+  .wide input { width: min(280px, 60vw); }
   .compact input { flex: 1; min-width: 200px; }
 </style>

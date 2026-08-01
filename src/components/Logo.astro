@@ -1,0 +1,21 @@
+---
+// Logo Ex Ante: linea di mercato che prosegue tratteggiata — la lettura "prima che accada".
+interface Props {
+  size?: number;
+}
+const { size = 30 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 32 32"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <rect width="32" height="32" rx="8" fill="var(--accent, #3E5C8F)"></rect>
+  <polyline points="6,22 12,16 16,19" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></polyline>
+  <polyline points="16,19 25,10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1.5 3.5" fill="none"></polyline>
+  <circle cx="25.5" cy="9.5" r="2.2" fill="#fff"></circle>
+</svg>
