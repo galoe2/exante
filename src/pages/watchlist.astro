@@ -1,0 +1,225 @@
+---
+import Base from '../layouts/Base.astro';
+import data from '../data/watchlist.json';
+import { fmtDate } from '../lib/utils';
+
+const MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+const [y, m] = data.month.split('-').map(Number);
+const monthLabel = `${MESI[m - 1]} ${y}`;
+const updated = fmtDate(new Date(data.updated)).toLowerCase();
+
+function pct(v: number | null): string {
+  if (v == null) return '—';
+  return `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(1).replace('.', ',')}%`;
+}
+function tone(v: number | null): string {
+  if (v == null) return '';
+  return v > 0 ? 'pos' : v < 0 ? 'neg' : '';
+}
+function price(it: any): string {
+  const sym = it.currency === 'EUR' ? '€' : it.currency === 'USD' ? '$' : it.currency;
+  return `${String(it.price.toFixed(2)).replace('.', ',')} ${sym}`;
+}
+
+const stocks = data.items.filter((i: any) => i.type === 'stock');
+const etfs = data.items.filter((i: any) => i.type === 'etf');
+
+const groups = [
+  { label: 'Azioni', items: stocks },
+  { label: 'ETF', items: etfs },
+].filter((g) => g.items.length > 0);
+---
+
+<Base
+  title="Watchlist — Ex Ante"
+  description={`I titoli sotto osservazione a ${monthLabel}: azioni ed ETF monitorati da Ex Ante, con performance aggiornate.`}
+  active="watchlist"
+>
+  <div class="container page">
+    <div class="head">
+      <div>
+        <h1>Watchlist</h1>
+        <p class="lead">
+          I titoli che stiamo monitorando: la composizione si rivede a inizio mese, i dati si
+          aggiornano con la pipeline. Osservare non significa comprare — significa avere una
+          tesi da verificare.
+        </p>
+      </div>
+      <div class="meta">
+        <span class="month-badge">{monthLabel}</span>
+        <span class="updated">Dati al {updated}</span>
+      </div>
+    </div>
+
+    {
+      groups.map((group) => (
+        <div class="group">
+          <div class="group-title">{group.label}</div>
+          <div class="table-card card-surface">
+            <div class="scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="name">Titolo</th>
+                    <th>Prezzo</th>
+                    <th>Da inizio mese</th>
+                    <th>Da inizio anno</th>
+                    <th>3 mesi</th>
+                    <th>Dal max 52 sett.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {group.items.map((it: any) => (
+                    <tr>
+                      <td class="name">
+                        <div class="tk-row">
+                          <span class="tk">{it.ticker}</span>
+                          <span class="nm">{it.name}</span>
+                        </div>
+                        <div class="note">{it.note}</div>
+                      </td>
+                      <td class="num">{price(it)}</td>
+                      <td class:list={['num', tone(it.mtd)]}>{pct(it.mtd)}</td>
+                      <td class:list={['num', tone(it.ytd)]}>{pct(it.ytd)}</td>
+                      <td class:list={['num', tone(it.m3)]}>{pct(it.m3)}</td>
+                      <td class:list={['num', tone(it.from_high)]}>{pct(it.from_high)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+
+    <p class="method">
+      "Da inizio mese" è calcolato sull'ultima chiusura del mese precedente; "dal max 52
+      sett." misura la distanza dal massimo dell'ultimo anno. Prezzi di chiusura, fonte
+      dati pubblici.
+    </p>
+
+    <div class="empty-state" style="max-width:none; margin-top:28px;">
+      <span class="nota">NOTA</span>
+      <span>
+        La watchlist ha scopo informativo: non è una raccomandazione di acquisto né
+        consulenza finanziaria.
+      </span>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 64px; padding-bottom: 80px; }
+  .head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 800;
+    font-size: clamp(34px, 4.5vw, 44px);
+    letter-spacing: -0.03em;
+  }
+  .lead {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 620px;
+    line-height: 1.7;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .month-badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+  .updated {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-faint);
+  }
+  .group { margin-bottom: 32px; }
+  .group-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  .table-card { overflow: hidden; }
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 780px;
+  }
+  th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: right;
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-soft);
+    white-space: nowrap;
+  }
+  th.name { text-align: left; }
+  td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--bg-panel-hover); }
+  td.name { min-width: 260px; }
+  .tk-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .tk {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .nm {
+    font-size: 13.5px;
+    color: var(--text-body);
+  }
+  .note {
+    margin-top: 4px;
+    font-size: 12.5px;
+    color: var(--text-faint);
+  }
+  td.num {
+    text-align: right;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--text-body);
+  }
+  td.num.pos { color: var(--pos); }
+  td.num.neg { color: var(--neg); }
+  .method {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--text-faint);
+    line-height: 1.65;
+    max-width: 720px;
+  }
+</style>

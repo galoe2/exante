@@ -45,9 +45,14 @@ La stessa pipeline riscrive `src/data/market.json`: la sezione "Market Pulse" in
 (SPY/QQQ/breadth/vol/risk, top gainers e losers 1S, RSI estremi + commento breve).
 Modificabile anche a mano con lo stesso schema.
 
-La pagina `/dashboard/` incornicia sempre il report più recente trovato in
+La pagina `/mercati/` incornicia sempre il report più recente trovato in
 `public/reports/` (con archivio delle settimane precedenti): si aggiorna da sola
 a ogni build, senza modifiche al codice.
+
+**Watchlist** (`/watchlist/`): la composizione si definisce in
+`ETF_Dashboard/watchlist.json` (da rivedere a inizio mese: ticker, tipo, nota);
+`make_watchlist.py` scarica prezzi e performance reali via yfinance e riscrive
+`src/data/watchlist.json`. Gira insieme alla pipeline (`run.py --post`).
 
 ## Deploy (GitHub Pages)
 
