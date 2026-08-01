@@ -1,6 +1,6 @@
 ---
-// Variante "wide" (banda in home) o "compact" (articolo, contatti).
-// Il form è solo UI: collegare action a un provider (Buttondown/MailerLite/ConvertKit).
+// Newsletter: work in progress — il form verrà attivato quando ci sarà
+// un provider collegato (Buttondown/MailerLite/ConvertKit).
 interface Props {
   variant?: 'wide' | 'compact';
 }
@@ -12,10 +12,7 @@ const { variant = 'compact' } = Astro.props;
     <div class="title">La lettura dei mercati, ogni settimana nella tua inbox.</div>
     <div class="sub">Una email a settimana, zero rumore. Disiscrizione in un click.</div>
   </div>
-  <form class="form" action="#" method="post">
-    <input type="email" name="email" placeholder="la-tua-email@esempio.it" required />
-    <button type="submit" class="btn-primary" style="padding:12px 22px;">Iscriviti</button>
-  </form>
+  <span class="wip">Newsletter in preparazione</span>
 </div>
 
 <style>
@@ -35,6 +32,7 @@ const { variant = 'compact' } = Astro.props;
     padding: 28px;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 14px;
   }
   .wide .content { max-width: 520px; }
@@ -52,22 +50,14 @@ const { variant = 'compact' } = Astro.props;
     margin-top: 8px;
   }
   .compact .sub { margin-top: 0; }
-  .form {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+  .wip {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 8px 16px;
+    border-radius: 999px;
+    white-space: nowrap;
   }
-  input {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    padding: 12px 14px;
-    outline: none;
-  }
-  input:focus { border-color: var(--accent); }
-  .wide input { width: min(280px, 60vw); }
-  .compact input { flex: 1; min-width: 200px; }
 </style>

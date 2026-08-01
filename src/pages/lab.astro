@@ -3,44 +3,44 @@ import Base from '../layouts/Base.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Screenshot: mettere le immagini in public/lab/ e aggiornare `img`.
-// Link GitHub/demo: aggiornare `github` e `demo` con gli URL reali.
+// Solo progetti reali. Quelli in sviluppo sono marcati `wip: true`
+// (niente screenshot né link finché non sono pubblicabili).
 const projects = [
   {
     nome: 'ETF Market Intelligence Dashboard',
     anno: '2026',
-    desc: 'Dashboard settimanale che traccia 106 ETF: segnali di regime, forza relativa e narrative di mercato generate via AI a ogni aggiornamento.',
-    stack: 'PYTHON · CLAUDE API · PLOTLY',
+    desc: 'Dashboard settimanale che traccia 106 ETF: segnali di regime, forza relativa e narrative di mercato generate via AI a ogni aggiornamento. È il motore della pagina Mercati e dell\'articolo settimanale del blog.',
+    stack: 'Python · Groq · GitHub Actions',
     img: '/lab/etf-dashboard.png',
-    github: '#',
-    demo: '#',
+    demo: '/mercati/',
+    wip: false,
   },
   {
     nome: 'Alpha Scout',
-    anno: '2026',
+    anno: 'WIP',
     desc: "Agente ispirato ai terminali finanziari: 5 chiamate sequenziali all'API di Claude per screening settoriale e idee d'investimento ordinate per ranking.",
-    stack: 'REACT · CLAUDE API',
-    img: '/lab/alpha-scout.svg',
-    github: '#',
-    demo: '#',
+    stack: 'React · Claude API',
+    img: '',
+    demo: '',
+    wip: true,
   },
   {
     nome: 'Kalman Adaptive Trading',
-    anno: '2025',
+    anno: 'WIP',
     desc: 'Sistema di trading algoritmico basato su filtro di Kalman adattivo, con backtesting rigoroso e regole di risk management esplicite.',
-    stack: 'PYTHON · PANDAS',
-    img: '/lab/kalman.svg',
-    github: '#',
+    stack: 'Python · Pandas',
+    img: '',
     demo: '',
+    wip: true,
   },
   {
     nome: 'Stock Tracker PWA',
-    anno: '2025',
+    anno: 'WIP',
     desc: 'App mobile di stock tracking multi-portafoglio: quotazioni in tempo reale via Finnhub, installabile come PWA.',
-    stack: 'REACT · FINNHUB · PWA',
-    img: '/lab/stock-tracker.svg',
-    github: '#',
-    demo: '#',
+    stack: 'React · Finnhub · PWA',
+    img: '',
+    demo: '',
+    wip: true,
   },
 ];
 ---
@@ -60,19 +60,22 @@ const projects = [
               {proj.img ? (
                 <img src={`${base}${proj.img}`} alt={`Screenshot — ${proj.nome}`} loading="lazy" />
               ) : (
-                <div class="placeholder">Screenshot — {proj.nome}</div>
+                <div class="placeholder">Work in progress</div>
               )}
             </div>
             <div class="body">
               <div class="head">
                 <h2>{proj.nome}</h2>
-                <span class="anno">{proj.anno}</span>
+                <span class:list={['anno', { wip: proj.wip }]}>{proj.anno}</span>
               </div>
               <p class="desc">{proj.desc}</p>
               <div class="stack">{proj.stack}</div>
               <div class="links">
-                <a href={proj.github}>GitHub →</a>
-                {proj.demo && <a href={proj.demo}>Demo →</a>}
+                {proj.demo ? (
+                  <a href={`${base}${proj.demo}`}>Vedi la dashboard →</a>
+                ) : (
+                  <span class="soon">In lavorazione — arriverà qui con codice e demo</span>
+                )}
               </div>
             </div>
           </article>
@@ -135,7 +138,7 @@ const projects = [
     justify-content: center;
     background: var(--bg-soft);
     color: var(--text-faint);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     padding: 12px;
     text-align: center;
@@ -166,6 +169,13 @@ const projects = [
     color: var(--text-faint);
     white-space: nowrap;
   }
+  .anno.wip {
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
   .desc {
     margin: 0;
     font-size: 14px;
@@ -187,5 +197,9 @@ const projects = [
   .links a {
     font-size: 13px;
     font-weight: 600;
+  }
+  .soon {
+    font-size: 13px;
+    color: var(--text-faint);
   }
 </style>
