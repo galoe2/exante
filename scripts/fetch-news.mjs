@@ -232,5 +232,12 @@ console.log(`News: ${items.length} titoli → ${OUT}`);
 for (const s of report) {
   console.log(`  ${s.name}: ${s.fonti.map((f) => `${f.name} ${f.count}${f.via ? ' (via Google News)' : ''}`).join(', ')}`);
 }
+// Qualche titolo per fonte, per controllare a colpo d'occhio la qualità nel log
+for (const s of report) {
+  for (const f of s.fonti) {
+    const esempi = items.filter((it) => it.categoria === s.id && it.source === f.id).slice(0, 3);
+    for (const it of esempi) console.log(`    [${s.id}/${f.id}] ${it.title}`);
+  }
+}
 
 if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `items=${items.length}\n`);
