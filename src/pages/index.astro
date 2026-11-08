@@ -6,9 +6,11 @@ import Newsletter from '../components/Newsletter.astro';
 import MarketPulse from '../components/MarketPulse.astro';
 import market from '../data/market.json';
 import { sortPosts, fmtDate } from '../lib/utils';
+import { loadNews, ultimeNotizie, sourceName, fmtQuando } from '../lib/news';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = sortPosts(await getCollection('blog')).slice(0, 3);
+const notizie = ultimeNotizie(loadNews().items);
 
 const pipe = (market as any).pipeline ?? {};
 const ov = (market as any).overview ?? {};
@@ -113,6 +115,30 @@ const homeLab = [
   <section class="container block">
     <MarketPulse />
   </section>
+
+  {
+    notizie.length > 0 && (
+      <section class="container block">
+        <div class="section-header" style="margin-bottom:24px;">
+          <div class="mono-label">Ultime notizie</div>
+          <a class="section-link" href={`${base}/news/`}>Tutte le notizie →</a>
+        </div>
+        <ul class="news card-surface">
+          {notizie.map((it) => (
+            <li>
+              <span class="news-meta">
+                <span class="news-fonte">{sourceName(it.source)}</span>
+                <time datetime={it.date}>{fmtQuando(it.date)}</time>
+              </span>
+              <a class="news-titolo" href={it.link} target="_blank" rel="noopener nofollow" lang="en">
+                {it.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 
   <section class="container block">
     <div class="section-header" style="margin-bottom:24px;">
@@ -268,6 +294,37 @@ const homeLab = [
   .d.dn { background: var(--neg-soft); color: var(--neg); }
   .d.nt { background: var(--bg-soft); color: var(--text-muted); }
   .block { padding-top: 24px; padding-bottom: 40px; }
+  .news {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    overflow: hidden;
+  }
+  .news li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 22px;
+    border-top: 1px solid var(--border);
+    margin-top: -1px;
+  }
+  .news-meta {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 12.5px;
+  }
+  .news-fonte { font-weight: 700; color: var(--accent); }
+  .news-meta time { font-weight: 500; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+  .news-titolo {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .news-titolo:hover { color: var(--accent); }
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

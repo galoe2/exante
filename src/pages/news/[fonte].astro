@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import NewsListing from '../../components/NewsListing.astro';
+import { NEWS_SOURCES } from '../../lib/news';
+
+// Una pagina per fonte: /news/bloomberg/, /news/reuters/, …
+export function getStaticPaths() {
+  return NEWS_SOURCES.map((s) => ({ params: { fonte: s.id }, props: { name: s.name } }));
+}
+
+const { fonte } = Astro.params;
+const { name } = Astro.props;
+---
+
+<Base title={`News da ${name} — Ex Ante`} description={`Gli ultimi titoli da ${name}, con link all'articolo originale.`} active="news">
+  <NewsListing active={fonte!} />
+</Base>

@@ -4,12 +4,14 @@ on:
   # Ogni push su main (nuovo articolo, modifiche al sito)
   push:
     branches: [main]
+  # News dai provider: ogni mattina e a mezzogiorno nei giorni feriali.
   # Dati della pipeline ETF (repo pubblico galoe2/etf-dashboard): il report esce il
   # sabato mattina, ma GitHub può ritardarlo di ore. Controllo il sabato sera e,
-  # come recupero, ogni mattina; se non c'è niente di nuovo non ripubblica.
+  # come recupero, ogni mattina.
   schedule:
-    - cron: '0 18 * * 6'   # sabato 19:00 CET
-    - cron: '30 5 * * *'   # ogni giorno 06:30 CET
+    - cron: '30 5 * * *'   # ogni giorno 06:30 CET: news + dati pipeline
+    - cron: '0 11 * * 1-5' # lun-ven 12:00 CET: news
+    - cron: '0 18 * * 6'   # sabato 19:00 CET: news + dati pipeline
   # Lancio manuale: sincronizza i dati e ripubblica sempre
   workflow_dispatch:
 
@@ -60,10 +62,24 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Titoli da Bloomberg, Reuters (via Google News), CNBC, MarketWatch, Fed e BCE.
+      # Il file src/data/news.json non va nel repo: si rigenera a ogni build.
+      - name: Scarica le news
+        id: news
+        run: node scripts/fetch-news.mjs
+
+      # Programmato: ripubblica se sono arrivati dati nuovi o titoli freschi.
+      # Se tutti i feed falliscono, resta online la versione precedente.
       - name: Serve ripubblicare?
         id: decide
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ steps.sync.outputs.changed }}" != "true" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ steps.sync.outputs.changed }}" != "true" ] && [ "${{ steps.news.outputs.items }}" = "0" ]; then
             echo "deploy=false" >> "$GITHUB_OUTPUT"
           else
             echo "deploy=true" >> "$GITHUB_OUTPUT"
@@ -75,13 +91,6 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
-
-      - name: Setup Node
-        if: steps.decide.outputs.deploy == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
 
       - name: Install
         if: steps.decide.outputs.deploy == 'true'

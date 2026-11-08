@@ -67,6 +67,18 @@ a ogni build, senza modifiche al codice.
 `make_watchlist.py` scarica prezzi e performance reali via yfinance e riscrive
 `src/data/watchlist.json`. Gira insieme alla pipeline (`run.py --post`).
 
+## News
+
+La pagina `/news/` (con una pagina per fonte) e il riquadro "Ultime notizie" in home
+mostrano i titoli di Bloomberg, Reuters, CNBC, MarketWatch, Fed e BCE: titolo, fonte, ora e
+link all'articolo originale, mai il testo. `scripts/fetch-news.mjs` legge i feed RSS e
+scrive `src/data/news.json` (non versionato) a ogni build; il workflow gira ogni mattina,
+a mezzogiorno nei giorni feriali e a ogni push. Reuters non ha più feed pubblici: i suoi
+titoli arrivano dalla ricerca di Google News, e Bloomberg ci ripiega se il feed ufficiale
+non risponde. Fonti e quantità si cambiano nell'elenco `SOURCES` dello script.
+
+In locale: `npm run news` prima di `npm run dev` per vedere titoli veri.
+
 ## Deploy (GitHub Pages)
 
 1. Crea un repo GitHub e pusha questa cartella.

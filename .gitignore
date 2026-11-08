@@ -2,3 +2,5 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+# Scritto a ogni build da scripts/fetch-news.mjs (npm run news)
+src/data/news.json
