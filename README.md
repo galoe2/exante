@@ -69,13 +69,21 @@ a ogni build, senza modifiche al codice.
 
 ## News
 
-La pagina `/news/` (con una pagina per fonte) e il riquadro "Ultime notizie" in home
-mostrano i titoli di Bloomberg, Reuters, CNBC, MarketWatch, Fed e BCE: titolo, fonte, ora e
-link all'articolo originale, mai il testo. `scripts/fetch-news.mjs` legge i feed RSS e
-scrive `src/data/news.json` (non versionato) a ogni build; il workflow gira ogni mattina,
-a mezzogiorno nei giorni feriali e a ogni push. Reuters non ha più feed pubblici: i suoi
-titoli arrivano dalla ricerca di Google News, e Bloomberg ci ripiega se il feed ufficiale
-non risponde. Fonti e quantità si cambiano nell'elenco `SOURCES` dello script.
+`/news/` è la panoramica, con gli ultimi titoli di ogni sezione; ogni sezione ha la sua
+pagina (`/news/mercati/`, `/mondo/`, `/tecnologia/`, `/motori/`). In home il riquadro
+"Ultime notizie dai mercati". Fonti per sezione:
+
+- **Mercati**: Bloomberg, Reuters, CNBC, MarketWatch, Fed, BCE.
+- **Mondo**: Reuters, BBC, The Guardian, Al Jazeera, ANSA.
+- **Tecnologia**: Reuters, Bloomberg, The Verge, Ars Technica, TechCrunch, ANSA.
+- **Motori**: Motor1, InsideEVs, Motorsport.com, Moto.it, ANSA, Reuters.
+
+Si pubblicano titolo, fonte, ora e link all'articolo originale, mai il testo.
+`scripts/fetch-news.mjs` legge i feed RSS e scrive `src/data/news.json` (non versionato) a
+ogni build; il workflow gira ogni mattina, a mezzogiorno nei giorni feriali e a ogni push.
+Le testate senza feed pubblico (Reuters, Moto.it) arrivano dalla ricerca di Google News, e
+le altre ci ripiegano se il loro feed non risponde. Sezioni, fonti e quantità si cambiano
+nell'elenco `SEZIONI` dello script; nome e descrizione delle sezioni in `src/lib/news.ts`.
 
 In locale: `npm run news` prima di `npm run dev` per vedere titoli veri.
 

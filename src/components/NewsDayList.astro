@@ -1,0 +1,96 @@
+---
+// Elenco di titoli diviso per giorno (ora italiana), dal più recente
+import { fmtOra, fmtGiorno, giornoKey, type NewsItem } from '../lib/news';
+
+interface Props {
+  items: NewsItem[];
+}
+const { items } = Astro.props;
+
+const giorni: { key: string; label: string; items: NewsItem[] }[] = [];
+for (const it of items) {
+  const key = giornoKey(it.date);
+  let g = giorni.find((x) => x.key === key);
+  if (!g) {
+    g = { key, label: fmtGiorno(it.date), items: [] };
+    giorni.push(g);
+  }
+  g.items.push(it);
+}
+---
+
+{
+  giorni.map((g) => (
+    <section class="giorno" aria-label={g.label}>
+      <h2>{g.label}</h2>
+      <ul class="lista card-surface">
+        {g.items.map((it) => (
+          <li>
+            <time datetime={it.date}>{fmtOra(it.date)}</time>
+            <span class="fonte">
+              {it.sourceName}
+              {it.label && <span class="etichetta"> · {it.label}</span>}
+            </span>
+            <a class="titolo" href={it.link} target="_blank" rel="noopener nofollow" lang={it.lang}>
+              {it.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}
+
+<style>
+  .giorno { margin-top: 36px; }
+  .giorno h2 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .lista li {
+    display: grid;
+    grid-template-columns: 52px 168px minmax(0, 1fr);
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+  }
+  .lista li:first-child { border-top: none; }
+  time {
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
+  }
+  .fonte {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .etichetta { font-weight: 500; color: var(--text-faint); }
+  .titolo {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .titolo:hover { color: var(--accent); }
+  @media (max-width: 640px) {
+    .lista li {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 4px 12px;
+      padding: 14px 18px;
+    }
+    .titolo { grid-column: 1 / -1; }
+  }
+</style>

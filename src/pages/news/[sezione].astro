@@ -1,0 +1,68 @@
+---
+import Base from '../../layouts/Base.astro';
+import NewsTabs from '../../components/NewsTabs.astro';
+import NewsDayList from '../../components/NewsDayList.astro';
+import { loadNews, SEZIONI_NEWS, fontiSezione } from '../../lib/news';
+
+// Una pagina per sezione: /news/mercati/, /news/mondo/, /news/tecnologia/, /news/motori/
+export function getStaticPaths() {
+  return SEZIONI_NEWS.map((s) => ({ params: { sezione: s.id }, props: { sez: s } }));
+}
+
+const { sez } = Astro.props;
+const news = loadNews();
+const items = news.items.filter((it) => it.categoria === sez.id);
+const { nomi, viaGoogle } = fontiSezione(news, sez.id);
+---
+
+<Base
+  title={`News ${sez.name} — Ex Ante`}
+  description={`${sez.desc} I titoli principali da agenzie e testate, con link all'articolo originale.`}
+  active="news"
+>
+  <div class="container page">
+    <NewsTabs active={sez.id} updated={news.updated} />
+
+    <p class="sez-desc">
+      <strong>{sez.desc}</strong>
+      {nomi.length > 0 && <span> Fonti: {nomi.join(', ')}.</span>}
+    </p>
+
+    {
+      items.length === 0 ? (
+        <div class="empty-state" style="margin-top:28px;">
+          <span class="nota">NEWS</span>
+          <span>In questo momento non ci sono titoli per questa sezione: si aggiornano ogni mattina e a metà giornata.</span>
+        </div>
+      ) : (
+        <NewsDayList items={items} />
+      )
+    }
+
+    <p class="nota-fonti">
+      Titoli e link appartengono ai rispettivi editori: Ex Ante non riproduce il testo degli
+      articoli.{viaGoogle.length > 0 && ` Arrivano dalla ricerca di Google News, perché senza feed pubblico o non raggiungibili: ${viaGoogle.join(', ')}.`}
+    </p>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 64px; padding-bottom: 80px; }
+  .sez-desc {
+    margin: 22px 0 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 720px;
+    line-height: 1.65;
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+  }
+  .sez-desc strong { color: var(--text); font-weight: 600; }
+  .nota-fonti {
+    margin: 32px 0 0;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-faint);
+    max-width: 640px;
+  }
+</style>

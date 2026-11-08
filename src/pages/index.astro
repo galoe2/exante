@@ -6,11 +6,12 @@ import Newsletter from '../components/Newsletter.astro';
 import MarketPulse from '../components/MarketPulse.astro';
 import market from '../data/market.json';
 import { sortPosts, fmtDate } from '../lib/utils';
-import { loadNews, ultimeNotizie, sourceName, fmtQuando } from '../lib/news';
+import { loadNews, ultimeNotizie, fmtQuando } from '../lib/news';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = sortPosts(await getCollection('blog')).slice(0, 3);
-const notizie = ultimeNotizie(loadNews().items);
+// In home solo le notizie della sezione Mercati
+const notizie = ultimeNotizie(loadNews().items.filter((it) => it.categoria === 'mercati'));
 
 const pipe = (market as any).pipeline ?? {};
 const ov = (market as any).overview ?? {};
@@ -120,17 +121,17 @@ const homeLab = [
     notizie.length > 0 && (
       <section class="container block">
         <div class="section-header" style="margin-bottom:24px;">
-          <div class="mono-label">Ultime notizie</div>
-          <a class="section-link" href={`${base}/news/`}>Tutte le notizie →</a>
+          <div class="mono-label">Ultime notizie dai mercati</div>
+          <a class="section-link" href={`${base}/news/`}>Tutte le news →</a>
         </div>
         <ul class="news card-surface">
           {notizie.map((it) => (
             <li>
               <span class="news-meta">
-                <span class="news-fonte">{sourceName(it.source)}</span>
+                <span class="news-fonte">{it.sourceName}</span>
                 <time datetime={it.date}>{fmtQuando(it.date)}</time>
               </span>
-              <a class="news-titolo" href={it.link} target="_blank" rel="noopener nofollow" lang="en">
+              <a class="news-titolo" href={it.link} target="_blank" rel="noopener nofollow" lang={it.lang}>
                 {it.title}
               </a>
             </li>

@@ -1,0 +1,73 @@
+---
+import { SEZIONI_NEWS, fmtQuando } from '../lib/news';
+
+interface Props {
+  // 'panoramica' oppure l'id di una sezione
+  active: string;
+  updated: string | null;
+}
+const { active, updated } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const tabs = [
+  { id: 'panoramica', name: 'Panoramica', href: `${base}/news/` },
+  ...SEZIONI_NEWS.map((s) => ({ id: s.id, name: s.name, href: `${base}/news/${s.id}/` })),
+];
+---
+
+<div class="head">
+  <h1>News</h1>
+  <p class="lead">
+    I titoli principali da agenzie e testate, divisi per sezione e aggiornati ogni giorno. Ogni
+    titolo porta all'articolo originale.
+  </p>
+  {updated && <p class="updated">Aggiornato il {fmtQuando(updated).replace(', ', ' alle ')}</p>}
+  <nav class="tabs" aria-label="Sezioni delle news">
+    {
+      tabs.map((t) => (
+        <a class:list={['chip', { active: active === t.id }]} href={t.href} aria-current={active === t.id ? 'page' : undefined}>
+          {t.name}
+        </a>
+      ))
+    }
+  </nav>
+</div>
+
+<style>
+  h1 {
+    margin: 0 0 10px;
+    font-weight: 800;
+    font-size: clamp(34px, 4.5vw, 44px);
+    letter-spacing: -0.03em;
+  }
+  .lead {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 640px;
+    line-height: 1.7;
+  }
+  .updated {
+    margin: 10px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-faint);
+  }
+  .tabs {
+    margin-top: 28px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 999px;
+    color: var(--text-muted);
+    background: var(--bg-soft);
+  }
+  .chip:hover { color: var(--text); }
+  .chip.active { color: #fff; background: var(--accent); }
+  .chip.active:hover { color: #fff; }
+</style>

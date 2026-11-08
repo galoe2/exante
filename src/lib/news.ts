@@ -1,41 +1,47 @@
 // Notizie dai provider (src/data/news.json, scritto da scripts/fetch-news.mjs a ogni
-// build). Il file non è nel repo: se manca, la sezione mostra lo stato vuoto.
+// build). Il file non è nel repo: se manca, le pagine mostrano lo stato vuoto.
 import fs from 'node:fs';
 import path from 'node:path';
 
 export interface NewsItem {
   title: string;
   link: string;
+  categoria: string;
   source: string;
-  section: string;
+  sourceName: string;
+  label: string | null;
+  lang: string;
   date: string;
 }
 
 export interface NewsData {
   updated: string | null;
-  sources: { id: string; name: string; count: number; via: string | null }[];
+  sezioni: { id: string; name: string; fonti: { id: string; name: string; count: number; via: string | null }[] }[];
   items: NewsItem[];
 }
 
-export const NEWS_SOURCES = [
-  { id: 'bloomberg', name: 'Bloomberg' },
-  { id: 'reuters', name: 'Reuters' },
-  { id: 'cnbc', name: 'CNBC' },
-  { id: 'marketwatch', name: 'MarketWatch' },
-  { id: 'fed', name: 'Fed' },
-  { id: 'bce', name: 'BCE' },
+// Sezioni della pagina News (le fonti di ciascuna sono in scripts/fetch-news.mjs)
+export const SEZIONI_NEWS = [
+  { id: 'mercati', name: 'Mercati', desc: 'Mercati, economia e banche centrali.' },
+  { id: 'mondo', name: 'Mondo', desc: 'Esteri e geopolitica.' },
+  { id: 'tecnologia', name: 'Tecnologia', desc: 'AI, chip, software e big tech.' },
+  { id: 'motori', name: 'Motori', desc: 'Auto, moto, elettrico e corse.' },
 ];
-
-export function sourceName(id: string): string {
-  return NEWS_SOURCES.find((s) => s.id === id)?.name ?? id;
-}
 
 export function loadNews(): NewsData {
   try {
-    return JSON.parse(fs.readFileSync(path.resolve('./src/data/news.json'), 'utf8'));
+    const d = JSON.parse(fs.readFileSync(path.resolve('./src/data/news.json'), 'utf8'));
+    return { updated: d.updated ?? null, sezioni: d.sezioni ?? [], items: d.items ?? [] };
   } catch {
-    return { updated: null, sources: [], items: [] };
+    return { updated: null, sezioni: [], items: [] };
   }
+}
+
+/** Nomi delle fonti di una sezione, nell'ordine dello script */
+export function fontiSezione(news: NewsData, id: string): { nomi: string[]; viaGoogle: string[] } {
+  const fonti = news.sezioni.find((s) => s.id === id)?.fonti ?? [];
+  const attive = fonti.filter((f) => f.count > 0);
+  return { nomi: attive.map((f) => f.name), viaGoogle: attive.filter((f) => f.via).map((f) => f.name) };
 }
 
 const TZ = 'Europe/Rome';
@@ -67,7 +73,7 @@ export function fmtQuando(iso: string): string {
   return `${giorno}, ${fmtOra(iso)}`;
 }
 
-/** Le ultime n notizie, al massimo `perFonte` per fonte, per variare il riquadro in home */
+/** Le ultime n notizie, al massimo `perFonte` per fonte, per variare i riquadri */
 export function ultimeNotizie(items: NewsItem[], n = 6, perFonte = 2): NewsItem[] {
   const out: NewsItem[] = [];
   const conta: Record<string, number> = {};

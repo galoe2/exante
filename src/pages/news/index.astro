@@ -1,12 +1,124 @@
 ---
 import Base from '../../layouts/Base.astro';
-import NewsListing from '../../components/NewsListing.astro';
+import NewsTabs from '../../components/NewsTabs.astro';
+import { loadNews, SEZIONI_NEWS, ultimeNotizie, fmtQuando } from '../../lib/news';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const news = loadNews();
+const blocchi = SEZIONI_NEWS.map((s) => {
+  const tutte = news.items.filter((it) => it.categoria === s.id);
+  return { ...s, totale: tutte.length, items: ultimeNotizie(tutte, 5, 2) };
+});
 ---
 
 <Base
   title="News — Ex Ante"
-  description="I titoli principali su mercati ed economia da Bloomberg, Reuters, CNBC, MarketWatch, Fed e BCE, aggiornati ogni giorno."
+  description="I titoli principali su mercati, mondo, tecnologia e motori da agenzie e testate, aggiornati ogni giorno."
   active="news"
 >
-  <NewsListing active="tutte" />
+  <div class="container page">
+    <NewsTabs active="panoramica" updated={news.updated} />
+
+    {
+      news.items.length === 0 ? (
+        <div class="empty-state" style="margin-top:28px;">
+          <span class="nota">NEWS</span>
+          <span>In questo momento non ci sono titoli disponibili: si aggiornano ogni mattina e a metà giornata.</span>
+        </div>
+      ) : (
+        <div class="grid">
+          {blocchi.map((b) => (
+            <section class="blocco card-surface" aria-labelledby={`sez-${b.id}`}>
+              <div class="blocco-head">
+                <h2 id={`sez-${b.id}`}>{b.name}</h2>
+                <span class="desc">{b.desc}</span>
+              </div>
+              {b.items.length === 0 ? (
+                <p class="vuoto">Nessun titolo recente.</p>
+              ) : (
+                <ul>
+                  {b.items.map((it) => (
+                    <li>
+                      <span class="meta">
+                        <span class="fonte">{it.sourceName}</span>
+                        <time datetime={it.date}>{fmtQuando(it.date)}</time>
+                      </span>
+                      <a class="titolo" href={it.link} target="_blank" rel="noopener nofollow" lang={it.lang}>
+                        {it.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <a class="tutte" href={`${base}/news/${b.id}/`}>
+                Tutte le notizie di {b.name} · {b.totale} →
+              </a>
+            </section>
+          ))}
+        </div>
+      )
+    }
+
+    <p class="nota-fonti">
+      Titoli e link appartengono ai rispettivi editori: Ex Ante non riproduce il testo degli
+      articoli. Le testate senza feed pubblico, come Reuters, arrivano dalla ricerca di Google
+      News.
+    </p>
+  </div>
 </Base>
+
+<style>
+  .page { padding-top: 64px; padding-bottom: 80px; }
+  .grid {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+    gap: 20px;
+  }
+  .blocco {
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+  }
+  .blocco-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .desc { font-size: 13px; color: var(--text-faint); }
+  ul { list-style: none; margin: 0; padding: 0; flex: 1; }
+  li {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .meta { display: flex; gap: 10px; align-items: baseline; font-size: 12.5px; }
+  .fonte { font-weight: 700; color: var(--accent); }
+  time { font-weight: 500; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+  .titolo { font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--text); }
+  .titolo:hover { color: var(--accent); }
+  .vuoto { margin: 16px 0; font-size: 14px; color: var(--text-muted); flex: 1; }
+  .tutte {
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .nota-fonti {
+    margin: 32px 0 0;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-faint);
+    max-width: 640px;
+  }
+</style>
