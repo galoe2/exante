@@ -67,12 +67,22 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
           </a>
         )}
 
-        {post!.data.rubrica === 'MERCATI' && (
-          <div class="empty-state" style="margin-top:44px; max-width:none;">
-            <span class="nota">NOTA</span>
-            <span>
-              Questo contenuto ha scopo informativo e non costituisce consulenza finanziaria.
-            </span>
+        {(post!.data.posizioni || post!.data.rubrica === 'MERCATI') && (
+          <div class="note-stack">
+            {post!.data.posizioni && (
+              <div class="empty-state note">
+                <span class="nota">POSIZIONI</span>
+                <span>{post!.data.posizioni}</span>
+              </div>
+            )}
+            {post!.data.rubrica === 'MERCATI' && (
+              <div class="empty-state note">
+                <span class="nota">NOTA</span>
+                <span>
+                  Questo contenuto ha scopo informativo e non costituisce consulenza finanziaria.
+                </span>
+              </div>
+            )}
           </div>
         )}
 
@@ -122,5 +132,19 @@ const Content = type === 'post' && post ? (await render(post)).Content : null;
     border-top: 1px solid var(--border);
     margin: 32px 0;
   }
-  .report-link { margin-top: 8px; }
+  .report-link { margin-top: 24px; }
+  .note-stack {
+    margin-top: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .note {
+    max-width: none;
+    padding: 20px 24px;
+  }
+  .note .nota { min-width: 76px; }
+  @media (max-width: 560px) {
+    .note { flex-direction: column; gap: 6px; }
+  }
 </style>

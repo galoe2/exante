@@ -13,6 +13,7 @@ const items = [
   { id: 'mercati', label: 'Mercati', href: `${base}/mercati/` },
   { id: 'watchlist', label: 'Watchlist', href: `${base}/watchlist/` },
   { id: 'lab', label: 'Lab', href: `${base}/lab/` },
+  { id: 'chisono', label: 'Chi sono', href: `${base}/chi-sono/` },
   { id: 'contatti', label: 'Contatti', href: `${base}/contatti/` },
 ];
 ---
@@ -62,6 +63,7 @@ const items = [
     font-size: 19px;
     letter-spacing: -0.02em;
     color: var(--text);
+    white-space: nowrap;
   }
   nav {
     display: flex;
@@ -79,5 +81,24 @@ const items = [
   .nav-item.active {
     color: var(--accent);
     background: var(--accent-soft);
+  }
+  /* Telefono: logo sopra, menu su una sola riga scorrevole */
+  @media (max-width: 760px) {
+    .inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding-top: 12px;
+      padding-bottom: 8px;
+    }
+    nav {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin: 0 -28px;
+      padding: 0 28px;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+    .nav-item { flex: 0 0 auto; white-space: nowrap; }
   }
 </style>

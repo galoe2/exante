@@ -16,6 +16,9 @@ const blog = defineCollection({
     sparkline: z.string().optional(),
     // Link al report HTML completo (articoli generati dalla pipeline ETF)
     report: z.string().optional(),
+    // Posizioni dell'autore sui titoli citati, al momento della pubblicazione
+    // (es. "Ho posizioni in Nvidia e Micron." oppure "Nessuna posizione sui titoli citati.")
+    posizioni: z.string().optional(),
   }),
 });
 

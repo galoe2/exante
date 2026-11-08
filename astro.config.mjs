@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import rehypeSezioni from './src/lib/rehype-sezioni.mjs';
 
 export default defineConfig({
   // GitHub Pages di progetto. Con un dominio custom (es. https://ex-ante.it):
@@ -8,6 +9,9 @@ export default defineConfig({
   trailingSlash: 'ignore',
   redirects: {
     '/dashboard': '/mercati',
-    '/chi-sono': '/contatti',
+  },
+  markdown: {
+    // Evidenzia le sezioni "Prima che accada" e "Fonti" negli articoli
+    rehypePlugins: [rehypeSezioni],
   },
 });

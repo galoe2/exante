@@ -24,8 +24,13 @@ I proxy dei flussi indicano capitale in ingresso su Crypto, International, Energ
 
 Se i flussi confermano la rotazione e la breadth non si deteriora, la struttura resta costruttiva; in caso contrario, la settimana andrà archiviata come rumore.
 
-## Cosa guardo da qui
+## Prima che accada
 
-- La conferma (o smentita) dei flussi su Crypto.
-- Il rientro degli RSI estremi senza danni sui prezzi.
-- La tenuta della breadth settoriale sopra la metà dei settori.
+1. La conferma (o smentita) dei flussi su Crypto.
+2. Il rientro degli RSI estremi senza danni sui prezzi.
+3. La tenuta della breadth settoriale sopra la metà dei settori.
+
+## Fonti
+
+- Prezzi e performance degli ETF: Yahoo Finance, elaborazione della pipeline settimanale di Ex Ante.
+- Notizie della settimana: feed RSS di banche centrali (Fed, BCE, Bank of England, Bank of Japan), FMI, BIS e testate finanziarie (CNBC, MarketWatch, Reuters e altre).

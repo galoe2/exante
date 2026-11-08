@@ -1,6 +1,8 @@
 # Ex Ante — sito e blog
 
-Sito statico [Astro](https://astro.build) del blog **Ex Ante** ("Prima che accada. Mercati, modelli, dati.") di Gennaro Aloe. Design da terminale finanziario: dark, IBM Plex, un solo accento.
+Sito statico [Astro](https://astro.build) del blog **Ex Ante** ("Prima che accada. Mercati, modelli, dati.") di Gennaro Aloe. Tema "business clean": bianco, Inter, accento blu sobrio; verde e rosso solo per i dati.
+
+Pagine: Home, Blog (rubriche Mercati / Modelli / Lab), Mercati (report settimanale), Watchlist, Lab, Chi sono, Contatti.
 
 ## Comandi
 
@@ -26,20 +28,31 @@ abstract: "Una o due frasi."
 # stat: "106 ETF"       # opzionale: micro-stat nella card
 # sparkline: "0,14 8,11 16,13 …"   # opzionale: mini-grafico nella card
 # report: "/reports/ETF_Report_2026-W29.html"  # opzionale: link al report completo
+# posizioni: "Ho posizioni in Nvidia e Micron."   # opzionale: box posizioni dell'autore
 ---
 ```
 
 3. Commit e push su `main`: il workflow `deploy.yml` ricostruisce e pubblica il sito.
 
-Il corpo è Markdown; è supportato anche HTML inline (figure con SVG, come nell'articolo
-"Dal war trade al dividendo della pace"). Gli articoli MERCATI ricevono automaticamente
-il box disclaimer.
+Il corpo è Markdown; è supportato anche HTML inline (figure con SVG). Gli articoli MERCATI
+ricevono automaticamente il box disclaimer.
+
+Due sezioni hanno uno stile dedicato (plugin `src/lib/rehype-sezioni.mjs`), basta il titolo:
+
+- `## Prima che accada` — la chiusura firma: tira il dunque, evidenziata in un riquadro.
+- `## Fonti` — elenco delle fonti in fondo all'articolo, in tono minore.
+
+Se l'articolo cita titoli, il campo `posizioni` mostra il box con le posizioni dell'autore.
 
 ## Articolo settimanale automatico
 
-Ogni sabato il workflow del repo **ETF_Dashboard** genera il report, crea l'articolo
-(`ETF_Dashboard/src/make_post.py`) e lo pusha in questo repo insieme al report HTML
-completo in `public/reports/`. Il push innesca il deploy. Setup nel README di ETF_Dashboard.
+Ogni sabato il workflow del repo pubblico **galoe2/etf-dashboard** genera il report e prepara
+per il sito articolo, `market.json` e `watchlist.json` nella sua cartella `site_export/`.
+Il workflow `deploy.yml` di questo repo li va a prendere da solo (sabato sera e ogni mattina,
+più il lancio manuale da Actions → "Deploy Ex Ante" → Run workflow) con
+`scripts/sync-pipeline.sh`: copia i report nuovi in `public/reports/`, l'articolo solo se non
+esiste già (le modifiche fatte a mano restano), i dati sempre; salva tutto nel repo e
+ripubblica. Nessun token da configurare tra i due repo.
 
 La stessa pipeline riscrive `src/data/market.json`: la sezione "Market Pulse" in home
 (SPY/QQQ/breadth/vol/risk, top gainers e losers 1S, RSI estremi + commento breve).
@@ -65,7 +78,7 @@ Con GitHub Pages "di progetto" (`user.github.io/repo`) aggiungi anche `base: '/r
 
 ## Da completare a mano
 
-- Link reali in `src/pages/contatti.astro` e `src/pages/lab.astro` (GitHub/demo).
+- Link a demo e codice dei progetti in `src/pages/lab.astro`.
 - Screenshot dei progetti Lab in `public/lab/` (campo `img` in `lab.astro`).
 - Newsletter: il form è solo UI — collegare `action` a Buttondown/MailerLite/ConvertKit
   in `src/components/Newsletter.astro`.

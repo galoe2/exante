@@ -1,0 +1,271 @@
+---
+import Base from '../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const scheda = [
+  { k: 'Ruolo', v: 'Project Leader, Advanced Analytics' },
+  { k: 'Ambito', v: 'Rischio di credito' },
+  { k: 'Temi', v: 'Modelli di rischio, explainable AI, MLOps, AI Act' },
+  { k: 'Docenza', v: 'Master in Data Science e AI, Università della Calabria' },
+  { k: 'Scrivo di', v: 'Mercati, modelli, dati' },
+];
+
+const percorso = [
+  {
+    quando: '2019 — oggi',
+    titolo: 'CRIF',
+    testo:
+      'Da Data Analyst a Project Leader nel team Advanced Analytics: modelli per il rischio di credito, explainability, AI Act.',
+  },
+  {
+    quando: 'Ogni anno',
+    titolo: 'Università della Calabria',
+    testo:
+      'Docente ospite al Master in Data Science e AI, con una lezione su come dati e AI creano valore in azienda.',
+  },
+];
+
+const formazione = [
+  {
+    titolo: 'Master di II livello in Data Science',
+    testo: 'Università della Calabria, 2022, con lode. Conseguito mentre lavoravo.',
+  },
+  {
+    titolo: 'Laurea in Economia e Commercio',
+    testo: 'Università di Firenze, con dodici mesi di Erasmus a Sofia, in Bulgaria.',
+  },
+  {
+    titolo: 'Certificazioni Hugging Face',
+    testo: 'AI Agent Fundamentals e LLM Fundamentals.',
+  },
+];
+
+const competenze = [
+  'Credit risk modeling',
+  'Scorecard e regressione logistica',
+  'Machine learning',
+  'Explainable AI',
+  'Spiegazioni controfattuali',
+  'MLOps',
+  'AI Act',
+  'Python',
+  'React',
+  'Agenti e LLM',
+];
+---
+
+<Base
+  title="Chi sono — Ex Ante"
+  description="Gennaro Aloe, Project Leader Advanced Analytics nel rischio di credito: chi scrive Ex Ante e perché."
+  active="chisono"
+>
+  <div class="container page">
+    <div class="top">
+      <div class="intro">
+        <h1>Chi sono</h1>
+        <p class="claim">
+          Sono Gennaro Aloe. Costruisco modelli che stimano il rischio prima che si manifesti; su
+          Ex Ante applico lo stesso metodo ai mercati e all'AI.
+        </p>
+        <div class="bio">
+          <p>
+            Sono Project Leader nel team Advanced Analytics di CRIF, dove sono entrato come Data
+            Analyst. Coordino un piccolo team e sviluppo modelli per il rischio di credito, dallo
+            scoring al pricing.
+          </p>
+          <p>
+            Il filo che lega il mio lavoro è la fiducia nei modelli: explainable AI, MLOps e
+            conformità all'AI Act europeo.
+          </p>
+          <p>
+            Ogni anno tengo una lezione al Master in Data Science e AI dell'Università della
+            Calabria su come dati e AI creano valore in azienda. Ho pubblicato ricerche sulle
+            spiegazioni controfattuali e sulla stima del rischio di credito con l'AI generativa.
+          </p>
+          <p>
+            Fuori dall'ufficio investo in prima persona: su Ex Ante scrivo quello che penso dei
+            mercati, con i dati sul tavolo e le posizioni dichiarate. Nel tempo libero, meccanica e
+            moto d'epoca.
+          </p>
+        </div>
+        <div class="cta">
+          <a class="btn-primary" href={`${base}/contatti/`}>Scrivimi</a>
+          <a class="btn-secondary" href="https://github.com/galoe2">GitHub</a>
+        </div>
+      </div>
+
+      <aside class="scheda card-surface" aria-label="Scheda">
+        <dl>
+          {
+            scheda.map((r) => (
+              <div class="riga">
+                <dt>{r.k}</dt>
+                <dd>{r.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </aside>
+    </div>
+
+    <div class="grid">
+      <section aria-labelledby="percorso">
+        <h2 id="percorso" class="mono-label">Percorso</h2>
+        <ol class="lista">
+          {
+            percorso.map((p) => (
+              <li>
+                <span class="quando">{p.quando}</span>
+                <div>
+                  <div class="titolo">{p.titolo}</div>
+                  <div class="testo">{p.testo}</div>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section aria-labelledby="formazione">
+        <h2 id="formazione" class="mono-label">Formazione</h2>
+        <ul class="lista">
+          {
+            formazione.map((f) => (
+              <li class="semplice">
+                <div class="titolo">{f.titolo}</div>
+                <div class="testo">{f.testo}</div>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+
+    <section class="competenze" aria-labelledby="competenze">
+      <h2 id="competenze" class="mono-label">Competenze</h2>
+      <ul class="chips">
+        {competenze.map((c) => <li>{c}</li>)}
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 64px; padding-bottom: 80px; }
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .top { grid-template-columns: 1fr; gap: 32px; }
+  }
+  h1 {
+    margin: 0 0 20px;
+    font-weight: 800;
+    font-size: clamp(34px, 4.5vw, 44px);
+    letter-spacing: -0.03em;
+  }
+  .claim {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.5;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .bio { margin-top: 24px; max-width: 640px; }
+  .bio p {
+    margin: 0 0 16px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+  }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  .scheda { padding: 8px 26px; }
+  .scheda dl { margin: 0; }
+  .riga {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+  }
+  .riga:first-child { border-top: none; }
+  dt {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  dd {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text-body);
+  }
+  .grid {
+    margin-top: 72px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 48px;
+  }
+  .mono-label { margin: 0 0 8px; }
+  .lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lista li {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .lista li.semplice { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .lista li:last-child { border-bottom: none; }
+  .quando {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .titolo {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .testo {
+    margin-top: 4px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-body);
+  }
+  @media (max-width: 560px) {
+    .lista li { grid-template-columns: 1fr; gap: 4px; }
+  }
+  .competenze { margin-top: 56px; }
+  .chips {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chips li {
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    color: var(--text-body);
+  }
+</style>

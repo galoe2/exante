@@ -152,13 +152,72 @@ h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
   letter-spacing: -0.02em;
   color: var(--text);
 }
-.article-body ul {
+.article-body ul,
+.article-body ol {
   margin: 0 0 24px;
   padding-left: 22px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
+/* ── Sezione firma "Prima che accada" (## Prima che accada) ── */
+.article-body .sezione-pca {
+  margin: 44px 0 32px;
+  padding: 26px 30px;
+  background: var(--accent-soft);
+  border: 1px solid #D5E0F0;
+  border-radius: var(--radius);
+  color: var(--text);
+}
+.article-body .sezione-pca h2 {
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.article-body .sezione-pca h2::before {
+  content: '';
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.article-body .sezione-pca li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+.article-body .sezione-pca > :last-child { margin-bottom: 0; }
+@media (max-width: 560px) {
+  .article-body .sezione-pca { padding: 22px 20px; }
+}
+
+/* ── Fonti (## Fonti) ──────────────────────────────────── */
+.article-body .sezione-fonti {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+.article-body .sezione-fonti h2 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.article-body .sezione-fonti ul,
+.article-body .sezione-fonti ol { gap: 6px; }
+.article-body .sezione-fonti a { overflow-wrap: anywhere; }
+.article-body .sezione-fonti > :last-child { margin-bottom: 0; }
 .article-body blockquote {
   margin: 32px 0;
   padding: 6px 0 6px 22px;

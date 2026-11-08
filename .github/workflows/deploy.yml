@@ -1,52 +1,105 @@
 name: Deploy Ex Ante
 
 on:
-  # Ogni push su main (nuovo articolo manuale o generato dalla pipeline ETF)
+  # Ogni push su main (nuovo articolo, modifiche al sito)
   push:
     branches: [main]
+  # Dati della pipeline ETF (repo pubblico galoe2/etf-dashboard): il report esce il
+  # sabato mattina, ma GitHub può ritardarlo di ore. Controllo il sabato sera e,
+  # come recupero, ogni mattina; se non c'è niente di nuovo non ripubblica.
+  schedule:
+    - cron: '0 18 * * 6'   # sabato 19:00 CET
+    - cron: '30 5 * * *'   # ogni giorno 06:30 CET
+  # Lancio manuale: sincronizza i dati e ripubblica sempre
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # per salvare nel repo i file arrivati dalla pipeline
   pages: write
   id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.decide.outputs.deploy }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Scarica i dati della pipeline ETF
+        if: github.event_name != 'push'
+        uses: actions/checkout@v4
+        with:
+          repository: galoe2/etf-dashboard
+          path: .pipeline
+          sparse-checkout: |
+            output
+            site_export
+
+      - name: Sincronizza report, articolo e dati
+        id: sync
+        if: github.event_name != 'push'
+        run: |
+          bash scripts/sync-pipeline.sh .pipeline
+          rm -rf .pipeline
+          git add public/reports src/content/blog src/data
+          if git diff --staged --quiet; then
+            echo "Nessun dato nuovo dalla pipeline."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Dati settimanali dalla pipeline ETF"
+            git pull --rebase --quiet origin main
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Serve ripubblicare?
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ steps.sync.outputs.changed }}" != "true" ]; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
       # Abilita GitHub Pages (build type: Actions) al primo run, senza setup manuale
       - name: Setup Pages
+        if: steps.decide.outputs.deploy == 'true'
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
       - name: Setup Node
+        if: steps.decide.outputs.deploy == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
       - name: Install
+        if: steps.decide.outputs.deploy == 'true'
         run: npm ci
 
       - name: Build
+        if: steps.decide.outputs.deploy == 'true'
         run: npm run build
 
       - name: Upload Pages artifact
+        if: steps.decide.outputs.deploy == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
     needs: build
+    if: needs.build.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

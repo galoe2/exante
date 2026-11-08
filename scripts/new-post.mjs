@@ -47,6 +47,7 @@ abstract: "TODO: abstract in 1-2 frasi."
 # readingMinutes: 8        # opzionale, altrimenti calcolato dalle parole
 # stat: "106 ETF"          # opzionale, micro-stat nella card
 # sparkline: "0,14 8,11 16,13 24,9 32,10 40,6 48,8 56,4 64,5"  # opzionale
+# posizioni: "Ho posizioni in … al momento della pubblicazione."  # se citi titoli
 ---
 
 Scrivi qui l'articolo in Markdown.
@@ -54,6 +55,16 @@ Scrivi qui l'articolo in Markdown.
 ## Primo titolo di sezione
 
 Testo…
+
+## Prima che accada
+
+1. Prima conseguenza, detta in chiaro.
+2. Seconda conseguenza.
+3. Terza conseguenza.
+
+## Fonti
+
+- [Titolo della fonte](https://…), data.
 `,
   'utf8'
 );
