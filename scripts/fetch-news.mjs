@@ -82,6 +82,10 @@ const SOURCES = [
 // Toglie la testata in coda ai titoli di Google News ("Titolo - Reuters")
 const SUFFIX = /\s+[-–—|]\s+(Reuters|Bloomberg(\.com| News)?|BNN Bloomberg)\s*$/i;
 
+// Risultati che non sono notizie: pagine di quotazione dei titoli (arrivano dalla
+// ricerca di Google News, es. "Harbor … ETF (TEC.N) | Stock Price & Latest News")
+const NON_NOTIZIE = [/stock price\s*(&|and)\s*latest news/i, /\|\s*stock (price|quote)/i, /\bstock quote\b/i];
+
 async function get(url) {
   const res = await fetch(url, {
     headers: { 'User-Agent': UA, Accept: 'application/rss+xml, application/xml, text/xml, */*' },
@@ -122,6 +126,7 @@ for (const src of SOURCES) {
   const items = got
     .filter((it) => it.date && now - it.date.getTime() <= maxAge && it.date.getTime() <= now + 3600000)
     .map((it) => ({ ...it, title: it.title.replace(SUFFIX, '').trim() }))
+    .filter((it) => !NON_NOTIZIE.some((re) => re.test(it.title)))
     .filter((it) => {
       const key = it.title.toLowerCase();
       if (seen.has(key) || seen.has(it.link)) return false;
