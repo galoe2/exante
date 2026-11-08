@@ -30,12 +30,14 @@ const quadrants: { title: string; tone: string; rows: Row[] }[] = [
     rows: (data.losers ?? []).map((e: any) => ({ t: e.t, d: e.d, value: pct(e.w1), tone: 'neg' })),
   },
   {
-    title: 'Ipercomprato · RSI',
+    // Sono i 5 RSI più alti della settimana: "ipercomprato" vale solo da 70 in su
+    title: 'RSI più alti · ipercomprato da 70',
     tone: 'up',
     rows: (data.overbought ?? []).map((e: any) => ({ t: e.t, d: e.d, value: `${Math.round(e.rsi)}`, tone: 'pos' })),
   },
   {
-    title: 'Ipervenduto · RSI',
+    // Sono i 5 RSI più bassi della settimana: "ipervenduto" vale solo fino a 30
+    title: 'RSI più bassi · ipervenduto fino a 30',
     tone: 'dn',
     rows: (data.oversold ?? []).map((e: any) => ({ t: e.t, d: e.d, value: `${Math.round(e.rsi)}`, tone: 'neg' })),
   },
