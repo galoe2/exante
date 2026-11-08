@@ -57,7 +57,9 @@ const SEZIONI = [
       },
       {
         id: 'marketwatch', name: 'MarketWatch', lang: 'en', max: 10, maxAgeDays: 3,
-        feeds: [{ url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories' }],
+        // Market Pulse: solo mercati (la prima pagina mescola rubriche di finanza personale)
+        feeds: [{ url: 'https://feeds.content.dowjones.io/public/rss/mw_marketpulse' }],
+        fallback: [{ url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories' }],
       },
       {
         id: 'fed', name: 'Fed', lang: 'en', max: 5, maxAgeDays: 21,
@@ -101,7 +103,12 @@ const SEZIONI = [
         fallback: [{ url: GN('when:3d site:bloomberg.com/news/articles technology'), via: VIA }],
       },
       { id: 'verge', name: 'The Verge', lang: 'en', max: 8, maxAgeDays: 3, feeds: [{ url: 'https://www.theverge.com/rss/index.xml' }] },
-      { id: 'ars', name: 'Ars Technica', lang: 'en', max: 8, maxAgeDays: 3, feeds: [{ url: 'https://feeds.arstechnica.com/arstechnica/index' }] },
+      {
+        // Sezione tecnologia (il feed generale include molta scienza)
+        id: 'ars', name: 'Ars Technica', lang: 'en', max: 8, maxAgeDays: 3,
+        feeds: [{ url: 'https://feeds.arstechnica.com/arstechnica/technology-lab' }],
+        fallback: [{ url: 'https://feeds.arstechnica.com/arstechnica/index' }],
+      },
       { id: 'techcrunch', name: 'TechCrunch', lang: 'en', max: 8, maxAgeDays: 3, feeds: [{ url: 'https://techcrunch.com/feed/' }] },
       {
         id: 'ansa', name: 'ANSA', lang: 'it', max: 8, maxAgeDays: 3, publisher: /ansa/i,
@@ -150,9 +157,16 @@ const SEZIONI = [
 const SUFFIX =
   /\s+[-–—|]\s+(Reuters|Bloomberg(\.com| News)?|BNN Bloomberg|ANSA(\.it)?|Agenzia ANSA|Moto\.it|Motor1(\.com)?( Italia)?|InsideEVs( Italia)?|Motorsport\.com( Italia)?)\s*$/i;
 
-// Risultati che non sono notizie: pagine di quotazione dei titoli (arrivano dalla
-// ricerca di Google News, es. "Harbor … ETF (TEC.N) | Stock Price & Latest News")
-const NON_NOTIZIE = [/stock price\s*(&|and)\s*latest news/i, /\|\s*stock (price|quote)/i, /\bstock quote\b/i];
+// Risultati che non sono notizie, arrivati dalla ricerca di Google News: pagine di
+// quotazione ("… ETF (TEC.N) | Stock Price & Latest News") e annunci di compravendita
+// ("Vendo Bmw R 1200 GS (2013 - 16) usata a Prato (codice 10155619)")
+const NON_NOTIZIE = [
+  /stock price\s*(&|and)\s*latest news/i,
+  /\|\s*stock (price|quote)/i,
+  /\bstock quote\b/i,
+  /^(vendo|cerco|compro)\s/i,
+  /\(codice \d+\)\s*$/i,
+];
 
 async function get(url) {
   const res = await fetch(url, {
