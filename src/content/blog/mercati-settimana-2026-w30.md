@@ -16,7 +16,7 @@ SPY ha chiuso la settimana a -1,7%, QQQ a -2,0%, con una breadth settoriale di 4
 
 ## Rotazioni e flussi
 
-I proxy dei flussi indicano capitale in ingresso su Crypto, International, Energy e in uscita da Healthcare, Real Estate. Sul fronte degli eccessi: RSI in ipercomprato per USO, XLE, XLU, XLF, XLV, in ipervenduto per REMX, LQD, XLY, TLT, XLC.
+I proxy dei flussi indicano capitale in ingresso su Crypto, International, Energy e in uscita da Healthcare, Real Estate. Sugli eccessi, gli RSI più alti sono su Crude Oil (71,6), Oil & Gas (68,7) e Utilities (59,7), i più bassi su Rare Earth (27,4), Investment Grade (30,2) e Discretionary (30,6). Oltre le soglie classiche: in ipercomprato (RSI da 70 in su) Crude Oil (71,6); in ipervenduto (RSI fino a 30) Rare Earth (27,4).
 
 ## La lettura ex ante
 
