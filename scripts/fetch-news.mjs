@@ -8,6 +8,7 @@
 //   feeds     — feed RSS/Atom (section = etichetta facoltativa mostrata accanto alla fonte)
 //   fallback  — feed di ripiego se i feed ufficiali non danno nulla (di solito Google News)
 //   publisher — per i feed di Google News: tiene solo i titoli di quella testata
+//   escludi   — espressioni regolari: titoli da scartare per quella fonte
 //   max, maxAgeDays, lang — quanti titoli, quanto recenti, lingua dei titoli
 //
 // Si pubblicano solo titolo, fonte, ora e link all'articolo originale: il testo
@@ -57,9 +58,15 @@ const SEZIONI = [
       },
       {
         id: 'marketwatch', name: 'MarketWatch', lang: 'en', max: 10, maxAgeDays: 3,
-        // Market Pulse: solo mercati (la prima pagina mescola rubriche di finanza personale)
-        feeds: [{ url: 'https://feeds.content.dowjones.io/public/rss/mw_marketpulse' }],
-        fallback: [{ url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories' }],
+        feeds: [{ url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories' }],
+        // La prima pagina mescola rubriche di consigli personali ("Should I…", "my stepmother…")
+        escludi: [
+          /\bshould (i|we)\b/i,
+          /\b(my|our) (husband|wife|partner|father|mother|dad|mom|stepmother|stepfather|sister|brother|son|daughter|parents|kids|children|adviser|advisor|boyfriend|girlfriend|fiancé|fiancée)\b/i,
+          /\bwe['’]re in our \d0s\b/i,
+          /\bi['’]m (\d+|in my \d0s)\b/i,
+          /\bmoneyist\b/i,
+        ],
       },
       {
         id: 'fed', name: 'Fed', lang: 'en', max: 5, maxAgeDays: 21,
@@ -105,7 +112,7 @@ const SEZIONI = [
       { id: 'verge', name: 'The Verge', lang: 'en', max: 8, maxAgeDays: 3, feeds: [{ url: 'https://www.theverge.com/rss/index.xml' }] },
       {
         // Sezione tecnologia (il feed generale include molta scienza)
-        id: 'ars', name: 'Ars Technica', lang: 'en', max: 8, maxAgeDays: 3,
+        id: 'ars', name: 'Ars Technica', lang: 'en', max: 8, maxAgeDays: 5,
         feeds: [{ url: 'https://feeds.arstechnica.com/arstechnica/technology-lab' }],
         fallback: [{ url: 'https://feeds.arstechnica.com/arstechnica/index' }],
       },
@@ -201,26 +208,30 @@ const report = [];
 for (const sez of SEZIONI) {
   const fonti = [];
   for (const fonte of sez.fonti) {
-    let got = await readFeeds(sez, fonte, fonte.feeds);
-    if (got.length === 0 && fonte.fallback) {
-      console.log(`  ${sez.name} · ${fonte.name}: feed non raggiungibile, provo il ripiego`);
-      got = await readFeeds(sez, fonte, fonte.fallback);
+    const filtra = (got) => {
+      const maxAge = fonte.maxAgeDays * 86400000;
+      const escludi = [...NON_NOTIZIE, ...(fonte.escludi ?? [])];
+      const seen = new Set();
+      return got
+        .filter((it) => it.date && now - it.date.getTime() <= maxAge && it.date.getTime() <= now + 3600000)
+        .map((it) => ({ ...it, title: it.title.replace(SUFFIX, '').trim() }))
+        .filter((it) => !escludi.some((re) => re.test(it.title)))
+        .filter((it) => {
+          const key = it.title.toLowerCase();
+          if (seen.has(key) || seen.has(it.link)) return false;
+          seen.add(key);
+          seen.add(it.link);
+          return true;
+        })
+        .sort((a, b) => b.date - a.date)
+        .slice(0, fonte.max);
+    };
+    let scelti = filtra(await readFeeds(sez, fonte, fonte.feeds));
+    // Ripiego se il feed non risponde o non ha titoli recenti
+    if (scelti.length === 0 && fonte.fallback) {
+      console.log(`  ${sez.name} · ${fonte.name}: nessun titolo recente dal feed, provo il ripiego`);
+      scelti = filtra(await readFeeds(sez, fonte, fonte.fallback));
     }
-    const maxAge = fonte.maxAgeDays * 86400000;
-    const seen = new Set();
-    const scelti = got
-      .filter((it) => it.date && now - it.date.getTime() <= maxAge && it.date.getTime() <= now + 3600000)
-      .map((it) => ({ ...it, title: it.title.replace(SUFFIX, '').trim() }))
-      .filter((it) => !NON_NOTIZIE.some((re) => re.test(it.title)))
-      .filter((it) => {
-        const key = it.title.toLowerCase();
-        if (seen.has(key) || seen.has(it.link)) return false;
-        seen.add(key);
-        seen.add(it.link);
-        return true;
-      })
-      .sort((a, b) => b.date - a.date)
-      .slice(0, fonte.max);
     fonti.push({ id: fonte.id, name: fonte.name, count: scelti.length, via: scelti.some((i) => i.via) ? VIA : null });
     for (const it of scelti) {
       items.push({
